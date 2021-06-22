@@ -52,10 +52,12 @@ NaN is a number type, use isNan() function to check NaN
   - function expression : const functionName = function(parameter){}, this is Not hoisted
   - function expression is prefered as will be using arrow functions later
   - best practice is only call funciton after it is declared.
+
 ```javascript
 const someFct = numbers => {
 }
-```javascript
+```
+
   - if only one parameter get rid of parenthesis, if only one line of code get rid of curley brackets, get rid of return status and arrow directly.
 
 * Refactor - use functions to make code blocks for reusability
