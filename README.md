@@ -194,3 +194,16 @@ console.log(person.age)
 ```
   - variables defined outside of the object can be defined as keys inside the object.
   - the "this." refers to the object the function will be called in, and create a new property for what is written after this.
+ 
+>Iterating in Objects
+  - because objects are not indexed like array, can not use for counter loop, can use for...of loop eg:
+  - ```
+    for (var planet in planetMoons) {
+  // additional filter for object properties:
+    if (planetMoons.hasOwnProperty(planet)) {
+      //  ...
+      }
+    }
+    ```
+   - above used .hasOwnProperty to filter out properties or methods inherited from protoype chains.
+
