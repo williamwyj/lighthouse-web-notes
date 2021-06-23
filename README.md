@@ -62,3 +62,135 @@ const someFct = numbers => {
 
 * Refactor - use functions to make code blocks for reusability
            - separate code blocks to be less specific functions such that function should only have a single goal
+### Day 3
+## Outline
+1. Primitive Data Types
+2. Object Fundamentals
+3. Functions and Objects
+  * pass-by-value
+  * Object methods
+
+## Primitive Data Types
+1.number (have upper and lower limit, bigger or smaller than this limit is bigint)
+2.string
+3.boolean
+4.null 
+5.undefined (default value for anything)
+6.symbol (unique, dont auto convert strings)
+7.bigint 
+
+> Is there a difference between string and String?
+
+in JS all primitives and Object have an Object wrapper. String.prototype.length
+
+```javascript
+var str = "test"
+str.length
+
+"test".length
+```
+
+Primitives are immutable.
+Primitive data cannot be changed, but variables can be reassigned.
+```
+var x = "this is a string"
+x.toUpperCase();
+returns "THIS IS A STRING"
+x = "this is a string"
+x = x.toUpperCase();
+x = "THIS IS A STRING"
+```
+## Object Fundamentals
+> So what is an object?
+
+Is an array an object? YES
+is a function an object? YES
+
+>An object is a value in memory which is referenced by an identifier. In JS objects can be thought of as a collection of properties.
+
+### Examples of objects
+1. "normal" objects (collections of key value pairs)
+2. Functions (objects that are "callable")
+3. Arrays (indexed collections)
+4. null is an object? not technically true, a peculiarity in JS due to having to work with Java
+
+```
+const arr  = [1,2,3]
+arr.test = "test"
+console.log(arr)
+[1,2,3, test: 'test]
+```
+
+> What are key value pairs?
+
+
+eg. obj.key
+> the . syntax is a shorthand, had limitation, it is literal, will take what comes after the . and convert it into a string.
+  eg 
+```
+const obj = {
+  "key" : "value"
+  "another key" : "another value"
+}
+
+var variable = "key"
+console.log(obj.variable]
+```
+will return undefined
+```
+console.log(obj[variable])
+```
+will return "value"
+     
+> if key name have a space in it, . syntax will not work becasue a space means something else.
+  eg "another key" : "another value" cannot be called by obj.another key
+
+> Object references
+  - An object is a value in memory which is referenced by a an identifier
+  - the name of an object is an identifier or reference that points to the actual object in memory.
+  - when object name is passed into a function, a copy of the identifier is passed into the function and the copy identifier is manipulated in the function
+  - But when refering to an property of the object, the actual object in the memory is accessed because the copy identifier points to the same object
+  - when a primitive data type is passed into a function, the function creates a copy of the data itself, not an identifier.
+```
+const replace = function(ref) {
+  ref = {} //this changes which object ref is pointing to
+}
+
+const update = function(ref) {
+  ref.key = "newvalue" // this updates the key value in the object
+}
+
+let obj = {key : "value"}
+update(obj) // obj still has its original value (unchanged)
+replace(obj) // obj contents has changed
+```
+>Object methods
+
+```
+
+function setAge(age) {
+  this.age = age
+}
+
+const person = {
+  firstName: "Zola",
+  
+  lastName: "McAdie",
+  
+  getFullName : function() {
+    return this.firstName + " " + this.lastName
+  }
+  
+  setAge
+}
+
+console.log(person.getFullName())
+
+console.log(person.age)
+
+person.setAge(29)
+
+console.log(person.age)
+```
+  - variables defined outside of the object can be defined as keys inside the object.
+  - the "this." refers to the object the function will be called in, and create a new property for what is written after this.
