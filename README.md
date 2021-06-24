@@ -194,7 +194,7 @@ console.log(person.age)
 ```
   - variables defined outside of the object can be defined as keys inside the object.
   - the "this." refers to the object the function will be called in, and create a new property for what is written after this.
- 
+  
 >Iterating in Objects
   - because objects are not indexed like array, can not use for counter loop, can use for...of loop eg:
   - ```
@@ -206,4 +206,120 @@ console.log(person.age)
     }
     ```
    - above used .hasOwnProperty to filter out properties or methods inherited from protoype chains.
+
+### Day 4 - Callbacks!
+
+## To Do
+- [ ] Functions as values
+- [ ] Function calling vs function passing
+- [ ] Callbacks and higher order functions
+- [ ] Anonymous functions
+- [ ] Arrow functions
+- [ ] Make our own higher order function
+
+* [ ] Functions as Values
+> key value pair, assignment of a value to a variable
+> Functions
+```javascript
+//function declaration
+  - function sayHello(name) {
+      console.log(`hello there ${name}`);
+    }
+//function expression
+  - const sayHello = function(name) {
+      console.log(`hello there ${name}`):
+    };
+ ```
+> function declaration does NOT get hoisted, and is prefered.
+> In function declaration, functions are Values or Objects.
+  -in this case, another variable can be assigned to the function value.
+
+> Functions are objects, eg, add a key value pair to function.
+> Functions can be stored into an array as an element. Or in objects as key value pairs.
+
+* [ ] Function calling vs function passing
+> Functions are first class, they are treated as Objects and can be used as such. 
+> Functions can be an argument and passed into another function, this is call a callback, eg below.
+```javascript
+const runMyFunction = function(yourFunction) {
+  console.log(yourFunction.toString());
+  yourFunction('Elise');
+};
+
+const sayHellow = function(name) {
+  console.log(`hello there ${name}`);
+};
+
+runMyFunction(sayHello);
+```
+> when a value or function does not have a variable assigned to it, it is called anonymous, call anonymous function inline, eg.
+```javascript
+myFunction(function(name) {
+  console.log(name);
+});
+```
+> as soon as a function finishes working, its content is garbage collected
+> scope: conditional, loops are their own small scopes so variable declared inside are not available outside of them
+
+* [ ] Arrow Functions
+> shorter syntax
+> 1. no need for the 'function' key word
+> 2. if there is only a single argument passed in, can omit parens
+> 3. if only one line of code, can omit curly braces
+> 4. arrow functions without curly braces automatically return whatever is to the right of the arrow
+> GOTCHA: if youre using the word 'this', you have to use a function keyword function.
+```javascript
+const sayHello = name => `hello there ${name}`;
+  //content
+//anonymous function as arrow function
+name => `hello there ${name}`; 
+  
+```
+* [ ] Make our own higher order function
+```javascript
+cont animalNoises = ['Oink', 'Moo', 'Meow', 'Bark, 'Oof', Nehhhh', 'Boww', 'Haaay', 'Quack'];
+
+const whatTheAnimalDoes = (animalNoise) => {
+  console.log(`the animal says "${animalNoise}");
+};
+
+const loopOverArray = (arr, behaviour) => {
+  for (const element of arr) {
+    behaviour(element);
+}
+
+loopOverArray(animalNoises, whatTheAnimalDoes);
+```
+* map, go thru an array, perform an action on each element, return an array of result for each element
+* map => transformation on an array
+* filter => removes elements from an array
+* forEach => perform an operation on each element of an array
+* reduce => takes an array and reduces it to a single value
+```
+const outMap = (arr, callback) => {
+  const output = [];
+  
+  // iterate over the provided arr
+  for (const element of arr) {
+    // call the call back for each element of the array
+    const returnVal = callback(element);
+    //push the return value from the callback into output
+    output.push(returnVal);
+    }
+  return output;
+};
+
+cont animalNoises = ['Oink', 'Moo', 'Meow', 'Bark, 'Oof', Nehhhh', 'Boww', 'Haaay', 'Quack'];
+
+const mapped Array = ourMap(animalNoises, (animalNoise) => {
+  return `only good animals say ${animalNoise}`;
+
+//use js predeteremined methods
+const builtInMap = animalNoises.map((animalNoise) => `the animal says ${animalNoise}`);
+console.log(builtInMap);
+});
+console.log(mappedArray);
+* filter
+
+
 
