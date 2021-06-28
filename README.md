@@ -341,7 +341,153 @@ console.log(mappedArray);
    2. help figure out different possibilities/edge cases, various pathways that our code may take.
    3. help make sure code works after modification, and identify new bugs introduced in the process of debugging.
    4. automate test, do not need to manually test after every modification. 
-   5. save time, help remember all required test cases. 
+   5. save time, help remember all required test cases.
+   6. help coordinator between team members, over the long time of developement.
+
+* Error Handling
+  - try catch block
+```javascript
+try{
+//Do the job with potential risk
+console.log(aaaaaa);
+}
+catch(error)
+{
+console.log(error.message);
+console.log(error.name);
+//Do whatever you want with the error
+}
+
+console.log('bb')
+```
+   -above code will result
+     aaaaaa is not defined
+     Reference error
+     bb
+   -code will stop execution as it arrive at an error, eg if a variable is defined
+   -try catch block will continue to execute code despite the error.
+
+* Require
+  -Access other files, makes our code more modular
+```
+//operations.js
+const add = (num1, num2) => {
+}
+const sub =....
+const mul =....
+module.exports = {add, sub, mul}; //<= this is called object destructuring
+//calculator.js
+const {add,sub,mul} = require(operations)
+console.log(add(10,20))
+console.log(sub(10,20))
+```
+  -eg numberOfVowels.js
+```javascript
+const numberOfVowels = (str) => {
+
+}
+
+numberOfVowels('pizza')
+  
+```
+  - eg numberOfVowels_test.js
+```javascript
+const numberOfVowels = require('./numberOfVowels.js');
+const assert = require('assert').strict //this make sure the assert is strict eg === and not ==, also all methods in the assert object.
+
+console.log(numberOfVowels("pizza"));
+```
+```
+console.log(assert.equal(1,2, 'Check equality of 2 numbers'));
+```
+  - assertion error is encountered when assertion fail (when actual !== expected)
+  - above will print the assertion error, and the error message
+
+** try and catch block
+```javascript
+const numberOfVowels = (str) => {
+const vowels = 'aeiou';
+let counter = 0;
+for (const letter of str) {
+  if(vowerls.includes(letter)) {
+    counter++;
+  }
+}
+return counter;
+}
+
+module.exports = numberOfVowels;
+```
+```javascript
+const assert = require('assert').strict // use assert library in node
+try{
+  console.log(assert.equal(numberofVowels('pizza'),1,'check pizza has 2 vowels'))
+//code here to test
+}
+catch(error)
+}
+  console.log(error.name, error.message) 
+  console.log('Actual is ',error.actual, 'while exptect is: '.error.expected);
+//code to manipulate the error, eg print out the error message
+{
+
+try{
+  console.log(assert.equal(numberofVowels('sashimi'),3,'check sashimi has 3 vowels'))
+//code here to test
+}
+catch(error)
+}
+  console.log(error.name, error.message, error.actual);
+//code to manipulate the error, eg print out the error message
+{
+```
+
+** mocha and chai
+- mocha is the test frame work, while chai is the assertion library that can be used with mocha.
+```javascript
+npm install --save-dev mocha //install into the project folder, not the test folder
+npm install mocha
+mkdir test
+//make a test.js file in the test folder
+//change scripts 'test':'mocha' //'test' is the name of the test
+npm run test //test is the name of the test, can be any string
+npx mocha//npx execute npm packages, this is another way to run the test
+```
+* mocha
+```javascript
+const assert = require('assert').strict;
+const numberOfVowels = require('../numberOfVowels')
+
+//describe a feature(or function) in multiple different scenarios
+
+describe('numberOfVowels', () => {
+  it('there is 2 vowels in pizza', () => {
+    assert.equal(numberOfVowels('pizza'), 2)
+  })
+  it('there is 3 vowels in sashimi', () => {
+    assert.equal(numberOfVowels('sashimi'), 3)
+  })
+});
+```
+
+  - check array equal
+```assert.deepEqual([1,2,3],[1,2,3]);```
+
+* chai
+```
+npm install chai //in the project folder not test folder, chai is only for test, so no need for --save-dev, in the json file it is listed as dependencies, and not dev dependencies
+
+const {expect} = require('chai');
+const numberOfVowels = require('../numberOfVowels')
+
+describe('numberOfVowels', () => {
+  it('there is 2 vowels in pizza', () => {
+    expect(numberOfVowels('pizza')).to.equal(2);
+  })
+  it('there is 3 vowels in sashimi', () => {
+    expect(numberOfVowels('sashimi')).to.equal(3);
+  })
+});
 
 
 
