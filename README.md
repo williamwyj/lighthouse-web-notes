@@ -319,7 +319,29 @@ const builtInMap = animalNoises.map((animalNoise) => `the animal says ${animalNo
 console.log(builtInMap);
 });
 console.log(mappedArray);
+
+```
 * filter
+
+* Breakout - callbacks!
+
+* To Do
+
+*** Week 2
+
+*** Day 1 - TDD with mocha and chai
+
+* TDD => test driven development
+ - Process that create test cases before developing the actual code, an iterative approach.
+   1. Create an expected value and test against it, test fails
+   2. write code so test passes
+   3. refactor/clean code
+ - Benefits
+   1. help recognize what the results should be, help clarify what requirements are, help ask the questions
+   2. help figure out different possibilities/edge cases, various pathways that our code may take.
+   3. help make sure code works after modification, and identify new bugs introduced in the process of debugging.
+   4. automate test, do not need to manually test after every modification. 
+   5. save time, help remember all required test cases. 
 
 
 
