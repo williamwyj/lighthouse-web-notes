@@ -488,6 +488,101 @@ describe('numberOfVowels', () => {
     expect(numberOfVowels('sashimi')).to.equal(3);
   })
 });
+```
+
+*** W2D2 - Asynchronous coding
+
+sample-robot.js
+```javascript
+
+const start = Date.now();
+//Analogy: need this robot to be able to monitor its status while it is doing other actions, eg if it gets knocked over as it get up or walk so it can update itself and not carry on the predetermined activity while knocked down
+
+function sleepFor(sleepDuration) {
+  const nowObject = new Date ();
+  //  console.log('nowObject:',JSON.stringify(nowObject));
+  const now = nowObject.getTime();
+  while(new Date().getTime() < now + sleepDuration) {
+   /* do nothing */
+  }
+}
+
+function doAction(name, duration,next = null/*set next to null if no parameter passed in/*) {
+  const now = new Date();
+  console.log(`${now.getTime() - start}: Starting ${name}`);
+  setTimeout ( () => {
+    console.log(`${then.getTime() - start}: Ending ${name}`);
+    next();
+  }, duration);
+  //sleepFor(duration); <= a blocking action that absorbs time
+}
+
+//
+// Look
+//
+const look = () => {
+  doAction('Look',500,look);
+};
+//
+// Get Up
+//
+const getUp = () => {
+  doAction('Get Up',5000,walk);
+};
+//
+// Walk
+//
+const walk = () => {
+  doAction('Walk',8000,openTheDoor);
+};
+//
+// openTheDoor
+//
+const openTheDoor = () => {
+  doAction('Open The Door',3000,walkThroughTheDoor);
+};
+//
+// walkThroughTheDoor
+//
+const walkThroughTheDoor = () => {
+
+  doAction('Walk Through The Door',4000);
+};
+
+look();
+
+getUp();
 
 
+```
+-function setTimeout(), schedule a function to run at a later time.
 
+```javascript
+
+function sleepFor(sleepDuration) {
+  const nowObject = new Date ();
+  //  console.log('nowObject:',JSON.stringify(nowObject));
+  const now = nowObject.getTime();
+  while(new Date().getTime() < now + sleepDuration) {
+   /* do nothing */
+  }
+}
+
+console.log('start');
+
+const nameOfFunction = () => {
+  console.log('monkey fuzz!');
+};
+
+setTimeout( nameOfFunction, 4444 ); // first parameter a function, second parameter time in millisecond of delay to call the function.
+
+console.log('presleep');
+sleepFor(10000); // will block the setTimeout code from running at its schedule
+console.log('postsleep');
+
+console.log('end');
+```
+>The setTimeout will execute after everything but without additional delay
+>The event loop, it is only when the main thread finish, then scheduled tasks execute
+>function definition only declare function and allocate memory but does not execute
+>schedule program to run in the event loop, the data will only return to the call back that is called in the event loop, not the main thread.
