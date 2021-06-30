@@ -586,3 +586,106 @@ console.log('end');
 >The event loop, it is only when the main thread finish, then scheduled tasks execute
 >function definition only declare function and allocate memory but does not execute
 >schedule program to run in the event loop, the data will only return to the call back that is called in the event loop, not the main thread.
+
+*** W2D3 - internet
+
+* Internet is a network of networks, its a protocal that allows your network of computers to connect to a back end system that can route individual computers on your network to individual computers on other networks. Open protocal that allows computers to connect through various different hardware
+  - original made be DARPA, US military
+* Web is set of software that is used on the internet
+  - TCP - Transport Control Protocol
+   - large messages are separated into small packets labeled with a sort order, each packet is sent to the internet, hops from place to place to the destination.
+   - packets arrive at the destination to be sorted by the TCPIP layer software, put them back in order. happens at a software level in the OS.
+   - packets does not need to take the same route
+     - made this way to be optimally robust to nuclear attacks, redundency of travel path.
+* DNS => Domain Name System
+  - convert URL to IP address
+  - 192.168.x.x means its guranteed packets would not be routed to the internet
+  - 127.0.0.1 is the IP for the local machine or localhost
+* Port
+  - Port is also required to connect to server
+  - a server machine typical host multiple server software. IP address is for a single machine. A port number is used to distinguish request to different servers on the same machine
+** Chat server example
+* server.js
+```javascript
+const net = require('net');
+const port = 8088; /*port number 1024 can be used without admin, port 80 is typical non-encrypted web traffic*/
+
+const connectedClients = [];
+
+const broadcast = (message) => {
+  //loop over all connect clients and write the message to each.
+  for (let cClient of connectedClients) {
+    cClient.write(message);
+    console.log('sending!');
+  }
+};
+
+const server = net.createServer();
+
+server.on('connection', function(client){
+  console.log(`Client has connected.`);
+  connectedClients.push(client);
+  client.write(`Welcome to my awesome server`!);
+  
+  client.on('data', function(message){
+    console.log(`Message received from client: ${message}`);
+    broadcast(message);
+  }
+  
+  client.on('end', function(){
+    console.log(`Somebody disconnected`);
+  } // need to confirm original quote, syntax not correct.
+});
+//reaction function, on event 'connection' invoke call back function. This is scheduling the callback on the eventloop, in reaction to other things, 
+//server.on or server.log order does not matter because they are asynchronous.
+//there can be multiple clients connect to a server, for every client that connect, this code will execute
+
+server.listen(port, function(){
+  console.log(`Server is listening on port ${port}`);
+});
+```
+* client.js
+
+```javascript
+const net = require('net');
+const port = 8088;
+
+const client = net.createConnection(
+  {
+    port : port,
+    host : 'localhost'
+  }
+);
+
+client.on('connect', function(){
+  console.log(`Client is connected to the server.`);
+});
+
+client.on('data', function(message){
+  console.log(`Server sent: ${message}`);
+});
+
+process.stdin.on('data', function(message){
+  client.write(message);
+})
+
+client.on('end',function(){
+  console.log(`client disconnected from server`); // this would be invoked if server is stopped, terminating the connection
+})
+```
+* type anything in the terminal while a program is running is called 'standard input'
+**URL
+             
+https:// www.google.com:80/search?q=bootcamp#montreal
+
+'https://' = Protocal
+'www' = sub-domain
+'google.com' = domain name
+'com' = top-level domain
+':80' = port
+'search' = path
+'?' = query
+'q=bootcamp' = parameters
+'#montreal' = fragment
+
+* http cat status code => a photo graph of a cat for each status code
