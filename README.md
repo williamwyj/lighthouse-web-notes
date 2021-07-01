@@ -689,3 +689,68 @@ https:// www.google.com:80/search?q=bootcamp#montreal
 '#montreal' = fragment
 
 * http cat status code => a photo graph of a cat for each status code
+
+***W2D4 Promise
+
+- Per the profile generator assignment from Tuesday, using readline and call backs to display a series of questions and ask for reply each time will end writing a  'callback hell', where each additional rl.question is the call back of the previous rl.question function. This makes sure the sequance of the questions asked where only the next question is asked once the question was the answer for the previous question was received.
+**Promise 
+- Promise is a javascript Object that behaves in a certain wayy
+  - Puts events on the event loop, either resolves or rejected. 
+  - promist object can use `.then` key function
+    - .then function takes in a function call back, where the single parameter is the return value of the promise that was completed and called the then.
+    - the .then recognize its input function is not a promise and make it into a promise, where its own return value can be chain with the next .then call.
+    - the .then only runs when its previous promise was successfully resolved, it is scheduled in the event loop regardless but wether it runs depend on the successful resolution of the previous promise
+  - catch function in promise chain
+    - .catch() will execute when a promise is rejected. 
+    - .catch() is able to return a promise to continue the chain, however all .then and .catch are written and execute in sequance
+ **Promise.all
+```
+const functions = require('./promise-generator');
+
+const returnPromise = functions.returnPromise;
+const returnRejectedPromise = functions.returnRejectedPromise;
+
+const promiseOne = returnPromise(`one`,1500);
+const promiseTwo = returnPromise(`Two`,5000);
+const promiseThree = returnPromise(`Three`,3000);
+const promiseFour = returnPromise(`Four`,4000);
+
+ Promise.all(promises) //where promises is an array of promise objects
+   .then((data) => {
+   console.log('success:', data);
+   })
+   .catch((err) => {
+   console.log('something was rejected!:',err);
+   })
+```
+- ahove code returns a array of response for each resolved promises only after all promises resolved.
+- above code will only resolve with .then after all promises in the array resolves as they were first  created
+- above code will return error and not execute any .then
+**Promise.race
+- will run the .then for the first promise that resolves in the array of promises and does NOT get to the others.
+- error catching, only will catch if the fastest promise resolve error
+**Create my own promise
+- A new promise can be created using the 'Promise' class
+- The 'Promise' constructor takes a callback that accepts two functions as arguments:
+  -'resolve': this call back is called when the operation has finished successfully
+  -'reject': this call back is called if the operation failed (usually with the error)
+```js
+const myPromise = new Promise((resolve,reject) => {
+//do something and resolve when finished or reject with an error
+}
+const returnRandomPromise = (value,delay = 1000) => {
+  const num = Math.floor(Math.random()*2);
+  if(num < 1) {
+    return new Promise(resolve,reject)=>{
+      setTimeout(()=>resolve(`yay! resolved!: ${value}`),delay);
+  })
+ }
+ return new Promise(resolve,reject)=>{
+  setTimeout(()=>reject(`doh! rejected: ${value}`),delay);
+ })
+}
+```
+*Class => class is a object template, syntax:
+```js
+new ObjectClass // this creates a new object from a predefined object class eg a Promise
+```
