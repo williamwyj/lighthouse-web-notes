@@ -754,3 +754,135 @@ const returnRandomPromise = (value,delay = 1000) => {
 ```js
 new ObjectClass // this creates a new object from a predefined object class eg a Promise
 ```
+***W2D5
+
+**Class => class is an object template, it however CANNOT be used as an object itself
+
+*new => this keyword for class will create a new Instance of the class, different instances are separate objects
+
+*constructor => this key word set the default values of the class, arguments passed into the class when make a new instance are passed in here
+
+```
+class Pizza {
+
+  constructor(size, crust) {
+    this.size = size;
+    this.crust = crust;
+    this.toppings = ["cheese"];
+  }
+
+  addTopping(topping) {
+    this.toppings.push(topping);
+  }
+
+}
+
+let pizza1 = new Pizza('large','thin');
+console.log(pizza1.toppings); // ["cheese"]
+console.log(pizza1.size); // 'large'
+pizza1.addTopping("mushrooms");
+console.log(pizza1.toppings); // ["cheese", "mushrooms"]
+
+```
+
+*inheritance => build a new class based on an existing class, 
+  - key word 'extends'
+```js
+
+// new class Student will inherit Person class, and add its own state or method.
+
+class Student extends Person {
+  // stays in Student class since it's specific to students only
+  enroll(cohort) {
+    this.cohort = cohort;
+  }
+}
+```
+
+*Super => invoke a method or property from the super-class(class that was inherited from) and insert into subclass
+```js
+class Person {
+  constructor(name, quirkyFact) {
+    this.name = name;
+    this.quirkyFact = quirkyFact;
+  }
+
+  bio() {
+    return `My name is ${this.name} and here's my quirky fact: ${this.quirkyFact}`;
+  }
+}
+
+class Mentor extends Person {
+  // Mentor bios need to include a bit more info
+  bio() {
+    return `I'm a mentor at Lighthouse Labs. ${super.bio()}`;
+  }
+}
+
+const bob = new Student('Bob Ross', 'I like mountains way too much');
+console.log(bob.bio());
+```
+>above code will result "I'm a mentor at Lighthouse Labs. My name is Bob Ross and here's my quirky fact: I like mountains way too much"
+
+*getter and setter
+ - getting, key word get, computes a value and set it to a property key.
+  - defines a function where the return value of the function will equal to the value with property key = name of the function
+ - setting, key word set, checks the value and sets a value to a property key
+  - defines a function where a parameter is passed into the function, the parameter is checked and if conditionals passes, the parameter is set to a property key.
+
+*** W2WE
+
+** charactor encoding
+  - UTF-8 is the most common encoding using on the web today, includes all reasonable languages humans use.
+
+** DNS server
+  - server chain:
+    Root server > TLD(Top Leverl) > Authoritative > Resolving
+
+*** W3D1
+
+*** Web Servers 101
+
+* TinyApp, URL shortener.
+  - register an account
+  - log in
+  - input and url and return a shortened URL
+  - list of generated url, edit and delete the list
+** Web Servers
+  - Application running on a computer that speaks HTTP
+  - Serve up files/data, HTML, CSS, Javascript, JSON, XML
+  - clients make requests, server responds (if possible)
+** HTTP - Hyper Text Transfer Protocol
+  - Built on top of the persistent TCP connection
+  - request => response protocol, the server does nothing until a request comes in. (unlike the snek TCP assignment, where request like up, down, right, does not result in a response.
+  * Find the computer
+    - We need to know where the other computer is? < IP address, or url like google.com, localhost.
+    - what port is it listening on? A machine can host multiply different servers, there are 65535 ports for every internet connection.
+      - reservered ports , 443(reserved for secured HTTPS), 80 or 8080 is standard HTTP (unsecured)
+  * Make a request
+    - Request is made up of a verb and a path
+    - Verb
+      - Tells us what we want to do
+        - GET => retrieve information
+        - POST => create/update/delete something on the server.
+    - Path
+      - Tells us what we want to do it to
+        - Follows the domain/host in the url (eg /users, /maps, /blogposts)
+        - eg. www.amazon.ca <= the host, /products <= path
+  * Receive a response
+    - Response code
+      - Indicate success/failure of the request
+      - eg. 404 (not found), 200 (all good), 420(enhance your comm), 418(I am a teapot), 500(internal server error)
+    - Response body (optional)
+  * Node is made from the Chrome v8 engine, which is an interpreter for javascript.
+    - nodejs.org
+      - http.createServer([option][requestListener]) //<= square brackets means optional
+  * Example web server
+```js
+const http = require('http');
+
+const server = http.createServer((request, response) => {
+  response.write('hello there');
+});
+
+server.listen(12345);
