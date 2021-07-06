@@ -975,35 +975,200 @@ code 304 => not modified, content have not changed sinced last visit, so can use
 code 400s => issue with request
 code 500s => issue with server
 
-*** W03D02 - CRUD with Express
+### W03D02 - CRUD with Express
 
-**Implement CRUD over HTTP with Express
-**Render data for the user using EJS template
-**Use forms to submit HTTP requests
-**Explore the Post-Redirect-Get pattern
-**Using Chrome DevTools to see requests and responses
-**Practice debugging Express
+##Implement CRUD over HTTP with Express
+##Render data for the user using EJS template
+##Use forms to submit HTTP requests
+##Explore the Post-Redirect-Get pattern
+##Using Chrome DevTools to see requests and responses
+##Practice debugging Express
 
-*CRUD === Create Read Update Delete
-*BREAD === Browse(read all resource) Read(only read specific item in resource) Edit Add Delete
-
-
-*ideas
+#CRUD === Create Read Update Delete
+#BREAD === Browse(read all resource) Read(only read specific item in resource) Edit Add Delete
 
 
-```js
+#ideas
+*nuanced: boolean
+*thought: string
+*thinker: string
+
+object of objects
+
+/server.js
+```js 
 const express = require('express');
 const morgan = require('morgan');
 const port = 4567;
 
-// in-memory
+// in-memory database
+
+const ideas = {
+  abcd: {
+    nuanced : false,
+    thought: 'should i go out for lunch today?',
+    thinker: 'Hungry Andy'
+  },
+  efgh: {
+    nuanced: false,
+    thought: 'treats are nice',
+    thinker: 'Fluffy the Cat'
+  }
+};
+
+const generateId = () => {
+ return Math.floor(Math.random() * 1000) + 1;
+};
 
 const app = express();
 
+app.set('view engine', 'ejs');
+
 app.use(morgan('dev'));
+app.use(express.urlencoded({ extended : false }));
+
+// Browse GET /ideas
+app.get('/ideas', (req,res) => {
+  const templateVars = { ideas };
+  res.render('ideas', {templateVars});
+});
+
+// Read GET /ideas/:id
+app.get('/ideas/:id', (req, res) => {
+  const ideaId = req.params.id;
+  const idea = ideas[ideaId];
+  
+  if(!idea) {
+    return res.redirect('/idea');//redirect the brower to make another GET request to the server with the indicted route
+  }
+  
+  const templateVars = { idea, ideaID };
+  res.render('idea', templateVars);
+});
+
+// Edit POST /ideas/:id
+
+app.post('/ideas/:id, (req, res) => {
+  const id = req.params.id;
+  //const body = req.body; //this is the body of the request, in this example it is an object {thought : "input"} where input is whatever is input into the form
+  const thought = req.body.thought;
+  ideas[id].thought = thought;
+  
+  res.redirect('/ideas');
+});
+
+// Add POST /ideas/ => often this will be accompanied by another form for user to input new information via app.get
+app.post('/ideas',(req, res) => {
+  const newThought = req.body;
+  //console.log(newThought); // this will show an object with keys that was set in the html code and input as the values for each key.
+  const id = generateId(); //number will be automatically turned into a string
+  
+  ideas[id] = newIdea;
+  
+  res.redirect('/ideas');
+});
+
+// delete POST /ideas/:id/delete <= added /delete to differentiate from the edit path
+
+app.post('/ideas/:id/delete', (req, res) => {
+  const id = req.params.id;
+  delete ideas[id];
+  
+  res.redirect('/ideas');
+  
+});
 
 app.listen(port, () => {
   console.log(`app is listening on port ${port}`);
 });
 
 ```
+/views/
+``` ideas.ejs
+// using a ! auto fill a scaffold of html
+<!DOC
+<head>
+  <meta charset="UTF-8">
+</head>
+<body>
+  <h2>All the ideas!</h2>
+  
+  <h2>Create a new idea!!</h2>
+  <form method = "POST action="/ideas">
+    <label>Thought</label>
+    <input name="thought" />
+    <br/>
+    <label>Thinker</label>
+    <input name="thinker" />
+    <br/>
+    <label>Nuanced</label>
+    <input name="thought" />
+    <br/>
+    <button type="submit">Create</button>
+  </form>
+  
+  
+  <% for (const ideaKey in ideas) { %>
+    <div style="border: 1px solid orange;"> //make a border 1 pixel thick around the content.
+      <h2>Thought: <%= ideas[ideaKey].thought %></h2>
+      <h3>Thinker: <%= ideas[ideaKey].thinker %></h3>
+      <h3>Nuanced: <%= ideas[ideaKey].Nuanced %></h3>
+      <a href="/ideas/<%= ideakey %>">Details</a> //make a link to specific idea page, <a> tags only make Get request
+    </div>
+  <% } %>
+</body>
+
+</html>
+```
+
+/views/
+```idea.ejs
+
+<body>
+  <h2>Just One idea!!</h2>
+  <a href="/ideas">Home</a> //link back to /ideas page
+  <div style="border:1px dotted salmon;">
+    <h2>Thought: <%= idea.thought %></h2>
+    <h3>Thinker: <%= idea.thinker %></h3>
+    <h3>Nuanced: <%= idea.Nuanced %></h3>
+    
+    <form method="POST" action="/ideas/<%= ideaId %>/delete">
+      <button type = "submit">Delete!</button>
+    </form>
+    
+  </div>
+  
+  <form method="POST" action="/ideas/<%= ideaID %>"> //<=once submitted, the form will make a post request to /ideas, as identified in the server.js code as one of the routes.
+    <label>New Thought:</label>
+    
+    <input name="thought" value="<%= idea.thought %>"/> //name attribute is critical, no closing tag input because input field has no children, no content and is a self closing tag. value auto fills the input field. 
+    
+    <button type="submit">Save!</button> //type="submit" means button submits the form. clicking the button makes a GET request
+  </form>
+  
+  ```
+  
+  urlencoded extended : false, means do you want extended data types (object or array), or just primitive
+  
+  Post => Redirect => Get principle
+  
+  All post routes end in redirect 
+  - a post request is a edit request, a get is a retrieve info request
+  - redundency, we already have get route to render, do not need to render in post
+  All Get routes end in render
+  
+  
+  TinyApp question: 
+  1. without a protocol at the beginning, express assume the url is a relative url eg
+  
+  res.redirect('www.google.com');
+  Get /u/www.google.com
+  
+  to resolve this issue type http:// protocol infront of the longUrl.
+  
+  2. how to validate url that user is. 
+  Make sure long url have http, eg use longURL.includes('http'); or 'https', to infill http infront of the longURL, browser will automatically swith to https if required.
+  to check if a url is valid, check if response 200 <= not part of this app, just FYI
+  
+  
+  
