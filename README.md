@@ -886,3 +886,124 @@ const server = http.createServer((request, response) => {
 });
 
 server.listen(12345);
+
+const server = http.createServer((request, response) => {
+  console.log('request')
+  const url = request.url;
+  const method = request.method;
+  
+  // GET /home, POST /users
+  const reqStr = `${method} ${url}`;
+  console.log(reqStr);
+  
+  if (reqStr === 'Get /home') {
+    response.write('you have visited the home page');
+  } else if {reqStr === 'Get /about') {
+    response.write('welcome to the about page');
+  } else {
+    response.write('resource not found');
+  }
+    
+  response.write('hello there');
+  response.end();
+});
+
+server.listen(12345);
+
+```
+
+** Express 
+ - Fast, unopinionated, minimalist web framework for Node.js
+   - unopinionated <= they do not have a say how users use their framework.
+* initial express
+ - npm init -y <= create a package.json file to manage packages
+ - npm install express --save <= only save local dependency, Not globally, this is no longer needed, since npm now default to local depency and not global
+
+```js
+const express = require('express');
+const app = express();
+const morgan = require('morgan')
+//morgan => HTTP request logger middleware for node.js, npm install morgan
+//middleware
+
+app.use((req,res) => {
+  if(!req.cookies.loggedIn) {
+    res.send('stopped by the middleware'); <= this will stop execution of the rest of the code
+  }
+  next();
+});
+
+app.use((req, res, next) => {
+  //body parser
+  //"username=jstamos&password=1234"
+  req.body = {
+    username : 'jstamos',
+    password: '1234'
+  };
+  next(); <= means done with this middleware
+});
+
+app.use(morgan('dev'));
+
+// add endpoints (VERB+PATH) => the order of the app.get matters, eg duplicate path with different response does not work, only the first response will ever work.
+
+// GET /home
+app.get('/home',(req, res) => {
+  res.send(`you have visited the home page ${req.body.username}`);
+});
+// Get /about
+app.get('/about', (req, res) => {
+ res.send('welcome to the about page');
+};
+
+// tell our app to listen on a port
+const port = 3333;
+
+app.listen(3333, ()=> {
+console.log(`app is listening on port ${port}`);
+});
+```
+
+** Middleware 
+ - code (in the form of a function) that runs between the request and the response.
+ - fantastic for parsing (changing the input), body, cookies
+
+request => middleware => route handler => middleware => response
+
+code 304 => not modified, content have not changed sinced last visit, so can use content in memory instead of retreiveing the infomation again.
+         =>command shift r to do hard refresh which does not use cache
+code 400s => issue with request
+code 500s => issue with server
+
+*** W03D02 - CRUD with Express
+
+**Implement CRUD over HTTP with Express
+**Render data for the user using EJS template
+**Use forms to submit HTTP requests
+**Explore the Post-Redirect-Get pattern
+**Using Chrome DevTools to see requests and responses
+**Practice debugging Express
+
+*CRUD === Create Read Update Delete
+*BREAD === Browse(read all resource) Read(only read specific item in resource) Edit Add Delete
+
+
+*ideas
+
+
+```js
+const express = require('express');
+const morgan = require('morgan');
+const port = 4567;
+
+// in-memory
+
+const app = express();
+
+app.use(morgan('dev'));
+
+app.listen(port, () => {
+  console.log(`app is listening on port ${port}`);
+});
+
+```
