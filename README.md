@@ -327,11 +327,11 @@ console.log(mappedArray);
 
 * To Do
 
-*** Week 2
+### Week 2
 
-*** Day 1 - TDD with mocha and chai
+### Day 1 - TDD with mocha and chai
 
-* TDD => test driven development
+# TDD => test driven development
  - Process that create test cases before developing the actual code, an iterative approach.
    1. Create an expected value and test against it, test fails
    2. write code so test passes
@@ -344,7 +344,7 @@ console.log(mappedArray);
    5. save time, help remember all required test cases.
    6. help coordinator between team members, over the long time of developement.
 
-* Error Handling
+# Error Handling
   - try catch block
 ```javascript
 try{
@@ -367,7 +367,7 @@ console.log('bb')
    -code will stop execution as it arrive at an error, eg if a variable is defined
    -try catch block will continue to execute code despite the error.
 
-* Require
+# Require
   -Access other files, makes our code more modular
 ```
 //operations.js
@@ -403,7 +403,7 @@ console.log(assert.equal(1,2, 'Check equality of 2 numbers'));
   - assertion error is encountered when assertion fail (when actual !== expected)
   - above will print the assertion error, and the error message
 
-** try and catch block
+## try and catch block
 ```javascript
 const numberOfVowels = (str) => {
 const vowels = 'aeiou';
@@ -442,7 +442,7 @@ catch(error)
 {
 ```
 
-** mocha and chai
+## mocha and chai
 - mocha is the test frame work, while chai is the assertion library that can be used with mocha.
 ```javascript
 npm install --save-dev mocha //install into the project folder, not the test folder
@@ -453,7 +453,7 @@ mkdir test
 npm run test //test is the name of the test, can be any string
 npx mocha//npx execute npm packages, this is another way to run the test
 ```
-* mocha
+# mocha
 ```javascript
 const assert = require('assert').strict;
 const numberOfVowels = require('../numberOfVowels')
@@ -473,7 +473,7 @@ describe('numberOfVowels', () => {
   - check array equal
 ```assert.deepEqual([1,2,3],[1,2,3]);```
 
-* chai
+# chai
 ```
 npm install chai //in the project folder not test folder, chai is only for test, so no need for --save-dev, in the json file it is listed as dependencies, and not dev dependencies
 
@@ -490,7 +490,7 @@ describe('numberOfVowels', () => {
 });
 ```
 
-*** W2D2 - Asynchronous coding
+### W2D2 - Asynchronous coding
 
 sample-robot.js
 ```javascript
@@ -587,25 +587,25 @@ console.log('end');
 >function definition only declare function and allocate memory but does not execute
 >schedule program to run in the event loop, the data will only return to the call back that is called in the event loop, not the main thread.
 
-*** W2D3 - internet
+### W2D3 - internet
 
-* Internet is a network of networks, its a protocal that allows your network of computers to connect to a back end system that can route individual computers on your network to individual computers on other networks. Open protocal that allows computers to connect through various different hardware
+# Internet is a network of networks, its a protocal that allows your network of computers to connect to a back end system that can route individual computers on your network to individual computers on other networks. Open protocal that allows computers to connect through various different hardware
   - original made be DARPA, US military
-* Web is set of software that is used on the internet
+# Web is set of software that is used on the internet
   - TCP - Transport Control Protocol
    - large messages are separated into small packets labeled with a sort order, each packet is sent to the internet, hops from place to place to the destination.
    - packets arrive at the destination to be sorted by the TCPIP layer software, put them back in order. happens at a software level in the OS.
    - packets does not need to take the same route
      - made this way to be optimally robust to nuclear attacks, redundency of travel path.
-* DNS => Domain Name System
+# DNS => Domain Name System
   - convert URL to IP address
   - 192.168.x.x means its guranteed packets would not be routed to the internet
   - 127.0.0.1 is the IP for the local machine or localhost
-* Port
+# Port
   - Port is also required to connect to server
   - a server machine typical host multiple server software. IP address is for a single machine. A port number is used to distinguish request to different servers on the same machine
-** Chat server example
-* server.js
+## Chat server example
+# server.js
 ```javascript
 const net = require('net');
 const port = 8088; /*port number 1024 can be used without admin, port 80 is typical non-encrypted web traffic*/
@@ -644,7 +644,7 @@ server.listen(port, function(){
   console.log(`Server is listening on port ${port}`);
 });
 ```
-* client.js
+# client.js
 
 ```javascript
 const net = require('net');
@@ -673,8 +673,8 @@ client.on('end',function(){
   console.log(`client disconnected from server`); // this would be invoked if server is stopped, terminating the connection
 })
 ```
-* type anything in the terminal while a program is running is called 'standard input'
-**URL
+# type anything in the terminal while a program is running is called 'standard input'
+##URL
              
 https:// www.google.com:80/search?q=bootcamp#montreal
 
@@ -688,9 +688,9 @@ https:// www.google.com:80/search?q=bootcamp#montreal
 'q=bootcamp' = parameters
 '#montreal' = fragment
 
-* http cat status code => a photo graph of a cat for each status code
+# http cat status code => a photo graph of a cat for each status code
 
-***W2D4 Promise
+###W2D4 Promise
 
 - Per the profile generator assignment from Tuesday, using readline and call backs to display a series of questions and ask for reply each time will end writing a  'callback hell', where each additional rl.question is the call back of the previous rl.question function. This makes sure the sequance of the questions asked where only the next question is asked once the question was the answer for the previous question was received.
 **Promise 
@@ -754,13 +754,13 @@ const returnRandomPromise = (value,delay = 1000) => {
 ```js
 new ObjectClass // this creates a new object from a predefined object class eg a Promise
 ```
-***W2D5
+###W2D5
 
-**Class => class is an object template, it however CANNOT be used as an object itself
+##Class => class is an object template, it however CANNOT be used as an object itself
 
-*new => this keyword for class will create a new Instance of the class, different instances are separate objects
+#new => this keyword for class will create a new Instance of the class, different instances are separate objects
 
-*constructor => this key word set the default values of the class, arguments passed into the class when make a new instance are passed in here
+#constructor => this key word set the default values of the class, arguments passed into the class when make a new instance are passed in here
 
 ```
 class Pizza {
@@ -785,7 +785,7 @@ console.log(pizza1.toppings); // ["cheese", "mushrooms"]
 
 ```
 
-*inheritance => build a new class based on an existing class, 
+#inheritance => build a new class based on an existing class, 
   - key word 'extends'
 ```js
 
@@ -799,7 +799,7 @@ class Student extends Person {
 }
 ```
 
-*Super => invoke a method or property from the super-class(class that was inherited from) and insert into subclass
+#Super => invoke a method or property from the super-class(class that was inherited from) and insert into subclass
 ```js
 class Person {
   constructor(name, quirkyFact) {
@@ -824,35 +824,35 @@ console.log(bob.bio());
 ```
 >above code will result "I'm a mentor at Lighthouse Labs. My name is Bob Ross and here's my quirky fact: I like mountains way too much"
 
-*getter and setter
+#getter and setter
  - getting, key word get, computes a value and set it to a property key.
   - defines a function where the return value of the function will equal to the value with property key = name of the function
  - setting, key word set, checks the value and sets a value to a property key
   - defines a function where a parameter is passed into the function, the parameter is checked and if conditionals passes, the parameter is set to a property key.
 
-*** W2WE
+### W2WE
 
-** charactor encoding
+## charactor encoding
   - UTF-8 is the most common encoding using on the web today, includes all reasonable languages humans use.
 
-** DNS server
+## DNS server
   - server chain:
     Root server > TLD(Top Leverl) > Authoritative > Resolving
 
-*** W3D1
+### W3D1
 
-*** Web Servers 101
+### Web Servers 101
 
-* TinyApp, URL shortener.
+# TinyApp, URL shortener.
   - register an account
   - log in
   - input and url and return a shortened URL
   - list of generated url, edit and delete the list
-** Web Servers
+## Web Servers
   - Application running on a computer that speaks HTTP
   - Serve up files/data, HTML, CSS, Javascript, JSON, XML
   - clients make requests, server responds (if possible)
-** HTTP - Hyper Text Transfer Protocol
+## HTTP - Hyper Text Transfer Protocol
   - Built on top of the persistent TCP connection
   - request => response protocol, the server does nothing until a request comes in. (unlike the snek TCP assignment, where request like up, down, right, does not result in a response.
   * Find the computer
@@ -912,10 +912,10 @@ server.listen(12345);
 
 ```
 
-** Express 
+## Express 
  - Fast, unopinionated, minimalist web framework for Node.js
    - unopinionated <= they do not have a say how users use their framework.
-* initial express
+# initial express
  - npm init -y <= create a package.json file to manage packages
  - npm install express --save <= only save local dependency, Not globally, this is no longer needed, since npm now default to local depency and not global
 
@@ -964,7 +964,7 @@ console.log(`app is listening on port ${port}`);
 });
 ```
 
-** Middleware 
+## Middleware 
  - code (in the form of a function) that runs between the request and the response.
  - fantastic for parsing (changing the input), body, cookies
 
@@ -1170,5 +1170,20 @@ app.listen(port, () => {
   Make sure long url have http, eg use longURL.includes('http'); or 'https', to infill http infront of the longURL, browser will automatically swith to https if required.
   to check if a url is valid, check if response 200 <= not part of this app, just FYI
   
+#Nodemon
   
+tool for developing servers, will restart server automatically after it detect code change
   
+```
+npm install --save-dev nodemon // install Nodemon package
+./node_module/.bin/nodemon -L express_server.js // run server with Nodemon
+// change in package.json to script running Nodemon, in the script, add item. "start": "./node_modules/.bin/nodemon -L express_server.js"
+npm start // this will run Nodemon with server after above modification to package.json
+```
+#html tags
+* forms, forms are needed whenever a post method is being used. syntax :
+```ejs
+<form method="POST" action="/logout"> //In this example the method is POST, the action correspond to the POST route parameter in the server file.
+```
+*buttons, 
+
