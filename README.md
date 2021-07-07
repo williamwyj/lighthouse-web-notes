@@ -1181,9 +1181,21 @@ npm install --save-dev nodemon // install Nodemon package
 npm start // this will run Nodemon with server after above modification to package.json
 ```
 #html tags
-* forms, forms are needed whenever a post method is being used. syntax :
+* forms, forms are needed whenever a post method is being used, any input or button involved with this form or submission of info is included in the tag. syntax :
 ```ejs
 <form method="POST" action="/logout"> //In this example the method is POST, the action correspond to the POST route parameter in the server file.
 ```
-*buttons, 
+* buttons
+```ejs
+<button type="submit">Logout</button> // In this example the button type is submit, the 'Logout' is text written on the button
+```
+* input, input, most important attribute is name, this is the key to the value inputed. In server code, req.body will return an object where the key is the name and the value is whatever was inputed, input is combined in to use with button. label before the input can explain what the input is. placeholder attribute is default infilled in the input before user can input.
+```ejs
+<label>Login</label> //this will be to the left of the input field
+<input name="username" placeholder="Username"> //in the server code, req.body will return { username: 'whatever user inputted'}
+```
+* Hyperlink in text
+```ejs
+<a href="/urls">My URLs</a> //The text My URLs is hyperlinked with "urls"
+```
 
