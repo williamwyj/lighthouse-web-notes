@@ -1199,3 +1199,684 @@ npm start // this will run Nodemon with server after above modification to packa
 <a href="/urls">My URLs</a> //The text My URLs is hyperlinked with "urls"
 ```
 
+### W3D3 HTTP Cookies & User Authentication
+
+[ ] HTTP and cookies
+[ ] Render pages differently based on language preference
+[ ] Register user with email and password
+
+## HTTP is stateless
+* server has no memory of previous interactions
+## Cookies
+# Cookies Cannot be req.cookies in the same block it is res.cookie stored on the browser. It can only be req.cookies in subsequent requests. 
+* a small file that is stored in the browser
+* key/value pair
+* every request to the server gets every cookie
+* cookies are domain specific, they cannot be shared with other domains
+
+# Render the home page and about page in different languages based on user preference
+
+# the || operator, if the left side is truthy, it is returned, if not then right hand side is returned, 
+
+```js
+
+const express = require('express');
+const morgan = require('morgan');
+const languages = require('./languages.json');
+const cookieParser = require('cookie-parser');
+
+const app = express();
+const port = 1234;
+
+app.use(morgan('dev'));
+app.use(express.urlencoded({ extended: false }));
+app.use(express.static('public')); //public is a folder that has all static files, eg CSS style file, or images, middleware, so routes does not handle request for static file/information
+app.use(cookieParser); // require and use, no additional code required to use cookie-parser
+
+app.set('view engine', 'ejs');
+
+const users = {
+  'abc' : {
+    id : 'abc',
+    email : 'jstamos@mail.com',
+    password : '1234'
+    }
+};
+
+const findUserByEmail = (email) => {
+  //if we find a user, return the user
+  //if not, return null
+  for (const userId in users) {
+    const user = users[userId];
+    if (user.email === email) {
+      return user;
+    }
+  }
+  return null;
+};
+
+};
+
+//GET /home
+app.get('/home', (req,res) => {
+  const templateVars = {
+    
+    const languagePreference = req.cookies.language;
+    
+    heading: languages.homeHeadings[languagePreference],
+    body: languages.homeBodies[languagePreference]
+  }
+  res.render('home', templateVars);
+});
+//Get /about
+app.get('/about', (req,res) => {
+  const languagePreference = req.cookies.language || 'en'; // the || operator, if the left side is truthy, it is returned, if not right side is returned
+  
+  const templateVars = {
+    heading: languages.aboutHeadings[languagePreference],
+    body: languages.aboutBodies[languagePreference]
+  }
+  res.render('about', templateVars);
+});
+
+// GET /languages/:languagePreference /languages/es
+app.get('/languages/:languagePreference', (req, res) => {
+  const languagePreference = req.params.languagePreference || 'en';
+  
+  // set the cookie with language preference
+  res.cookie('language', languagePreference); 
+  
+  res.redirect('/home');
+});
+
+// Get /login
+app.get('/login', (req,res) => {
+  res.render('login');
+});
+
+// get /register
+app.get('/register', (req,res) => {
+  res.render('register');
+});
+
+
+// Get /protected
+
+app.get('/protected', (req, res) => {
+ // check if the user has a cookie set
+ const userId = req.cookies.userId;
+ if (!userId) {
+   return res.status(401).send('you are not authorized to be here');
+ }
+ // retrieve the user based on userId
+ const user = user[userId];
+ 
+ res.render('protected', { user });
+}
+
+// Post /login
+app.post('/login', (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  
+  //make sure they gave us correct info
+  if (!email || !password) {
+    return res.status(400).send('email and password cannot be blank');
+  }
+  
+  // find the user based on email
+  const user = findUserByEmail(email);
+  
+  // did we not find a user?
+  if(!user) {
+    return res.status(400).send('no user with that email found'); // return here, terminate code at this point can only respond once per request, if try to response again after a response was send, will error
+  }
+  
+  //we found the user! now we need to compare the password
+  if (user.password !== password) {
+    return res.status(400).send('password does not match');
+  }
+  
+  //happy path! at last
+  res.cookie('userID', user.id);//store minimum amount of info, in this case an id
+  
+  // redirect the user
+  res.redirect('/protected');
+});
+
+// Post /register
+app.post('/register', (req, res) ={
+  const email = req.body.email;
+  const password = req.body.password;
+  
+  //check if they gave us anything
+  if(!email||!password) {
+    return res.status(400).send('email and password cannot be blank');
+  }
+  
+  //find out if email is already in use
+  const user = findUserByEmail(email);
+  if(user){
+    return res.status(400).send('that email address is already in use');
+  }
+  
+  //add the new user to our users object
+  const id = Math.floor(Math.random() * 1000) +1;
+  
+  users[id] = {
+    id,
+    email,
+    password,
+  };
+  
+  res.redirect('/login');
+  
+})
+
+// Post /logout
+app.post('/logout', (req, res) = {
+  //clear the cookie
+  res.clearCookie('userId');
+  
+  res.redirect('/login');
+});
+
+
+
+
+app.listen(port, () => {
+  console.log(`App is listening on ${port}`);
+});
+```
+
+home.ejs
+```ejs
+<body>  
+  <h1><%= heading %></h1>
+  <h2><%= body %></h2>
+  <a href="/about">Visit the about page</a>
+  <div>
+    <a href="/languages/en">en</a>
+    <a href="/languages/fr">fr</a>
+    <a href="/languages/ja">ja</a>
+    <a href="/languages/ko">ko</a>
+    <a href="/languages/es">es</a>
+    <a href="/languages/so">so</a>
+  </div>
+</body>
+```
+
+about.ejs
+```ejs
+<body>  
+  <h1>%= heading %></h1>
+  <h2><%= body %></h2>
+  <a href="/home">Visit the home page</a>
+</body>
+```
+language.json <= content in different languages
+
+login.ejs
+```ejs
+<body>
+  <h1>Login Below</h1>
+  <h2>New here?<a href="/register"Register Now!</a></h2>
+  
+  <form method="POST" action="/login">
+    <label> Email address:</label>
+    <input name="email" /> // type="email" check if input is email format
+    <br/>
+    <label> Password:</label>
+    <input type="password" required name="password" /> //type="password" typed in char will be masked as asterisk, required will pop up a tool tip that says password cannot be empty if no input.
+    <br/>
+    
+    <button type="submit">Login!</button>
+  </form>
+</body>
+```
+register.ejs
+```ejs
+<body>
+  <h1>Register</h1>
+  <h2>Been here before?<a href="/login"Login Now!</a></h2>
+  
+  <form method="POST" action="/register">
+    <label> Email address:</label>
+    <input name="email" /> // type="email" check if input is email format
+    <br/>
+    <label> Email address:</label>
+    <input type="password" name="password" /> //type="password" typed in char will be masked as asterisk
+    <br/>
+    
+    <button type="submit">Register!</button>
+  </form>
+</body>
+```
+protected.ejs
+```ejs
+<body>
+  <form method="POST action="/logout">
+  <button type ="submit">Logout</button>
+</body>
+```
+
+### W3D4
+- [ ] Encrypted cookies
+- [ ] HTTP Secure (HTTPS)
+- [ ] REST
+- [ ] More HTTP methods
+- [ ] Method Override [Stretch]
+
+## Hashing
+* one way algorithm, which means it "cannot" be undone <= means cannot be done within a reasonable amount of time.
+* plaintext password => hashing algo => random alpha-numeric string 'hash'
+* salt = additional info that gets added to the password
+  - eg password = 'hello' => add salt to the password, it is a randomly generated string eg, fdsafdacda+hello. this is to prevent hacking with list of common passwords.
+* compare the incoming password, we are going to hash it again, but not us
+* we let the comparison algo hash it for us
+
+# bcrypt (in C++) or bcryptjs (in js)
+
+## Encryption
+* two-way algorithm
+ - plaintext => encryption algo => random alpha-numeric => cookie
+# cookie-session
+* middleware that encrypts cookie
+ - from the server, plaintext => set the cookie => middleware encrypt => browser
+ - from the client, receive encrypted cookie => middleware decrypt => route handlers plaintext
+ req.session.userId = user.id to set encrypted cookies
+ user.id = req.session.userId to retrieve cookie
+ - creates a signature cookie and also an encrypted cookie, dual layer of security
+
+## HTTP Secure (HTTPS)
+ - HTTP is a plaintext protocal, everything being transfered in plaintext.
+ - person-in-the-middle attack <= router can ready all thru traffic between the server and client.
+ * TLS Transport Layer Security 
+ * Asymetric encryption : public key and a private key
+ * Client = data + public key = encrypt => webserver
+ * Server = encrypted data + private key = decrypt => insert data/read data
+  - Buy TLS certificate
+  - install the certificate to our web hosting server
+  - ensure internal links are using https
+  - setup 301s, if anyone go to our unsecured site gets redirected to https site
+
+## REST
+* Naming convention for routes
+* REpresentational State Transfer
+* routes we use to interact with a resource, represent the underlying data structure
+* RESTful architecture
+
+B GET   /users  //whatever the resource is plural, use the same path name for all methods that work with the same resource// 
+R GET   /users/:id
+E POST  /users/:id
+A POST  /users
+D POST  /users/:id/delete
+
+underlying data structure eg.
+
+R GET /maps/:mapId/pins
+R GET /authors/:authorId/books
+R Get /recipes/:recipeId/ingredients
+
+## More HTTP methods
+* PUT, PATCH, DELETE (GET, POST) => Semantic verbs ONLY, they are all synonyms for post, all use POST method underlying
+* PUT => replace the entire resource
+* PATCH => replace a piece of the resource
+* DELETE => deletes a resource
+
+B GET   /users  //whatever the resource is plural, use the same path name for all methods that work with the same resource// 
+R GET   /users/:id
+E PATCH  /users/:id
+A POST  /users
+D DELETE  /users/:id
+
+## method override
+* Browser(html forms) only recognize GET or POST method in forms
+* in server.js file, change endpoint from app.post to app.patch, use outside library npm method-override
+```
+const methodOverride = require('method-override');
+app.use(methodOverride('_method'))
+
+//write our own middleware
+
+app.use((req, res, next) => {
+  if(req.query._method) { //find the action value in the form
+    req.method = req.query._method;
+  }
+  next();
+});
+```
+in the ejs template:
+```
+<form method="POST" action="/login?_method=PATCH">
+```
+# hashing.js
+```js
+const bcrypt = require('bcrypt');
+const plaintextPassword = 'hello';
+
+bcrypt.genSalt(10, (err, salt) => {
+  console.log(salt);
+  bcrypt.hash(plaintextPassword, salt, (err, hash) => {
+    console.log(hash);
+  });
+});
+
+const hashedPassword = '$2a$1-$fxQzcwTDRcHGXLOkb9bNaeKHq9KsfJepi4A....'l
+
+const testPassword = 'apple';
+
+bcrypt.compare(testPassword, hashedPassword, (err, result) => {
+  console.log('result', result); // compare user input password to hashed password
+});
+
+bcrypt.gensalt(10)
+  .then((salt) => {
+    bcrypt.hash(plaintextPassword, salt)
+      .then((hash) => {
+        console.log(hash);
+       });
+     });
+bcrypt.genSalt(10)
+  .then((salt) => {
+    return bcrypt.hash(plaintextPassword, salt)
+  })
+  . then((hash) => {
+    console.log(hash);
+  });
+```
+
+
+```js
+
+const express = require('express');
+const morgan = require('morgan('dev')');
+const languages = require('./languages.json');
+//const cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt');
+const cookieSession = require('cookie-session');
+
+
+const app = express();
+const port = 1234;
+
+app.use(morgan('dev'));
+app.use(express.urlencoded({ extended: false }));
+app.use(express.static('public')); //public is a folder that has all static files, eg CSS style file, or images, middleware, so routes does not handle request for static file/information
+//app.use(cookieParser); // require and use, no additional code required to use cookie-parser
+app.use(cookieSession({
+  name: 'jun21', //name of the cookie, key for the value pair
+  keys : ['key1','key2']
+}));
+
+app.set('view engine', 'ejs');
+
+const users = {
+  'abc' : {
+    id : 'abc',
+    email : 'jstamos@mail.com',
+    password : '1234'
+    }
+};
+
+const findUserByEmail = (email) => {
+  //if we find a user, return the user
+  //if not, return null
+  for (const userId in users) {
+    const user = users[userId];
+    if (user.email === email) {
+      return user;
+    }
+  }
+  return null;
+};
+
+};
+
+//GET /home
+app.get('/home', (req,res) => {
+  const templateVars = {
+    
+    const languagePreference = req.cookies.language;
+    
+    heading: languages.homeHeadings[languagePreference],
+    body: languages.homeBodies[languagePreference]
+  }
+  res.render('home', templateVars);
+});
+//Get /about
+app.get('/about', (req,res) => {
+  const languagePreference = req.cookies.language || 'en'; // the || operator, if the left side is truthy, it is returned, if not right side is returned
+  
+  const templateVars = {
+    heading: languages.aboutHeadings[languagePreference],
+    body: languages.aboutBodies[languagePreference]
+  }
+  res.render('about', templateVars);
+});
+
+// GET /languages/:languagePreference /languages/es
+app.get('/languages/:languagePreference', (req, res) => {
+  const languagePreference = req.params.languagePreference || 'en';
+  
+  // set the cookie with language preference
+  //res.cookie('language', languagePreference); 
+  req.session.
+  res.redirect('/home');
+});
+
+// Get /login
+app.get('/login', (req,res) => {
+  res.render('login');
+});
+
+// get /register
+app.get('/register', (req,res) => {
+  res.render('register');
+});
+
+
+// Get /protected
+
+app.get('/protected', (req, res) => {
+ // check if the user has a cookie set
+ // const userId = req.cookies.userId;
+ const userId = req.session.userId;
+ if (!userId) {
+   return res.status(401).send('you are not authorized to be here');
+ }
+ // retrieve the user based on userId
+ const user = user[userId];
+ 
+ res.render('protected', { user });
+}
+
+// Post /login
+app.post('/login', (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  
+  //make sure they gave us correct info
+  if (!email || !password) {
+    return res.status(400).send('email and password cannot be blank');
+  }
+  
+  // find the user based on email
+  const user = findUserByEmail(email);
+  
+  // did we not find a user?
+  if(!user) {
+    return res.status(400).send('no user with that email found'); // return here, terminate code at this point can only respond once per request, if try to response again after a response was send, will error
+  }
+  
+  //we found the user! now we need to compare the password
+  bcrypt.compare(password, user.password, (err, result) => {
+    if(!result) {
+      return res.status(400).send('password does not match');
+      }
+    //happy path! at last
+    //res.cookie('userID', user.id);//store minimum amount of info, in this case an id
+      req.session.userId = user.id
+    // redirect the user
+    res.redirect('/protected');
+  });
+});
+
+// Post /register
+app.post('/register', (req, res) ={
+  const email = req.body.email;
+  const password = req.body.password;
+  
+  //check if they gave us anything
+  if(!email||!password) {
+    return res.status(400).send('email and password cannot be blank');
+  }
+  
+  //find out if email is already in use
+  const user = findUserByEmail(email);
+  if(user){
+    return res.status(400).send('that email address is already in use');
+  }
+  
+  //add the new user to our users object
+  const id = Math.floor(Math.random() * 1000) +1;
+  
+  //hash the user's password
+  
+  bcrypt.genSalt(10,(err,salt)=> {
+    bcrypt.hash(password, salt, (err, hash) ={
+      users[id] = {
+      id,
+      email,
+      password: hash
+      console.log(users);
+      
+      res.redirect('/login');
+  });
+  });
+  
+})
+
+// Post /logout
+app.post('/logout', (req, res) = {
+  //clear the cookie
+  //res.clearCookie('userId');
+  res.session = null; // destroy the session using cookie-session middle ware syntax
+  res.redirect('/login');
+});
+
+
+
+
+app.listen(port, () => {
+  console.log(`App is listening on ${port}`);
+});
+```
+
+### W4D1
+
+## CSS
+
+# Tweeter
+# Multipage app vs single page app
+# Semantic HTML
+# Box Model
+# Web Layout - Floats
+# Web Layout - Flexbox
+
+* jsfiddler.net to practice styling
+
+# Tweeter Project example
+* when posting, URL does not change, the tweet is posted below the input area without the page reloading.
+  - Server responded with just JSON data, the client used the data to updated the page content.
+* Twitter word counter, reduces as input letters.
+
+Multi-page LiftCycle(Classic approach):
+  - Client initial request
+  - server answer with html page
+  - client post request
+  - server reload html with request
+Singe-page liftcycle(More Modern approach):
+  - Client intial request
+  - server answer with html page
+  - Client send AJAX - Asynchronous Javascript with XML
+  - Server reply with JSON
+
+# Semantic HTML
+* Defining the role or meaning of the content, it's important to use proper tags!
+  - Makes code easy to maintain
+  - helps accessibility applications to recognize the page properly to parse.
+  - Help with search query
+* Web developer addon for chrome = outline box elements
+# Box Model
+* content, padding => distance between content and the border, border, margin=>space outside the borded, away from other elements
+* Border box
+  - The border(outline of the margin), stays constent, changes to the size of border and padding and content change within the border to fit.
+* content box
+  - size of the content stays constent, while changes to padding and border are changed
+* When calculate the total width of and element, content + padding x 2 + border x 2. 
+  - Margins of each element overlap with each other.
+* When specify box-sizing - border-box => the exterior size does not change, interiors change proportionally to fit the total size.
+# Weblayout
+# Float
+* Floats weblayouts:to do image with text with proper formatting.
+* Floared elements are not part of the flow of the normal 
+  - <div> tags reserves the rest of the line for the element, but does not center the content
+  - <header> also reserves the rest of the line for the element, center the content.
+    * <div> and <header> and some other tags are block tags, which will block off the rest of the line for the element in the tag.
+  - <strong> is not a block tag, it line tag, only bolds the content, does not block off the rest of the line.
+  - 'float' property, value can be right, non, left. Eliminates the parent box, whole line reserved for box tags so the contents are displayed together, not on individual lines.
+* To target specific ID in the html code, use # in the css code to identify the ID, eg:
+   .box {
+ }
+* for Class in the html code, use . in the css code to identify the ID. Below class will override broad tag CSS for example the below the div tag 
+ # box{
+   border-width:1px;
+ }
+*  to target general tags, below example make all div tag 10px border-width
+div{
+ border-width:10px;
+}
+
+# Flexbox
+  - The main axis is defined by the flex-direction property, and the cross axis runs perpendicular to it.
+  - container, flex start, flex end of the main axis begin and end.
+     * Justify main axis
+     * align cross axis
+  - In parent tag is the container.
+  - each tag can have class and more specific class eg
+```
+ <main class="container">
+  <p class='smiley smiley-1'>content</p>
+  <p class='smiley smiley-2'>content</p>
+  <p class='smiley smiley-3'>content</p>
+ </main>
+ 
+ .container {
+   background-color: lightgrey;
+   width: 100%;
+   display: flex:
+   flex-direction: row;
+   justify-content: space-between; 
+   align-items: center;
+ 
+ 
+ .smiley {
+   font-size:4em;
+   boder:
+ }
+ 
+ .smiley-1 {
+   order: 3; // in display will change this to be the 3rd or last rendered and will be on the right most side of the screen.
+ }
+ 
+ .smiley-2 {
+   border-color:red;
+   align-self: flex-start;
+ }
+ 
+ .smiley-3{
+   border-color: dodgeblue;
+   flex-basis: 50%;
+ }
+ ```
