@@ -1821,10 +1821,10 @@ Singe-page liftcycle(More Modern approach):
 # Float
 * Floats weblayouts:to do image with text with proper formatting.
 * Floared elements are not part of the flow of the normal 
-  - <div> tags reserves the rest of the line for the element, but does not center the content
-  - <header> also reserves the rest of the line for the element, center the content.
-    * <div> and <header> and some other tags are block tags, which will block off the rest of the line for the element in the tag.
-  - <strong> is not a block tag, it line tag, only bolds the content, does not block off the rest of the line.
+  - div tags reserves the rest of the line for the element, but does not center the content
+  - header also reserves the rest of the line for the element, center the content.
+    * div and header and some other tags are block tags, which will block off the rest of the line for the element in the tag.
+  - strong is not a block tag, it line tag, only bolds the content, does not block off the rest of the line.
   - 'float' property, value can be right, non, left. Eliminates the parent box, whole line reserved for box tags so the contents are displayed together, not on individual lines.
 * To target specific ID in the html code, use # in the css code to identify the ID, eg:
    .box {
@@ -1894,3 +1894,144 @@ div{
  <a onclick="alert('Hello!');" href="link"></a>
  ```
  
+### W4D2 Javascript and JQuery
+
+## To Do
+- [ ] Javascript in the Browser
+ 
+```html
+<html>
+  <head>
+    <title>My Page</title>
+    
+    <link rel="stylesheet" href="styles.css"/>
+  </head>
+ <body>
+  <h1>Welcome to my page!</h1>
+  <div class="content">
+    <p>My Favorite Number</p>
+    <ul id="main-list">
+     <li>One</li>
+     <li>Two</li>
+     <li>Three</li>
+    </ul>
+  </div>
+ </body>
+</html>
+```
+styles.css
+```css
+body {
+  background-color: black;
+  color : white;
+}
+
+.content {
+  border: 2px dotted #ff61df;
+  border-radius: 15px;
+}
+
+#main-list {
+ color: orangered;
+}
+  
+```
+## Separation of Concerns
+ *HTML - structure mark up
+ *CSS - styling
+ *JS - additional functionality
+# Window JS object
+   - window object contains user information including browser info, interactions, viewport size, etc.
+   - Does not need to type in window, can access property directly.
+   - window.location - where this page is, online or local, link etc
+   - window.history - history of browsing history
+     -window.history.back() - same as the back button
+   - window.document
+     -html code of the page
+     -console.dir() displays an interactive list of the object with disclosure triangles
+# Window JS object
+   - navigator.geolocation.getCurrentPosition((location) - { console.log(location)}); - prints latitude and longitude location
+   - navigator.getGamepads();
+   - navigator.getBattery(), get battery information of the machine, eg labptop
+## DOM - Document Object Model
+   - data structure based off of our html
+   - data structure is tree.
+   - node on the tree
+     - can have unlimited siblings
+     - can have unlimited children
+     - can have only one parent
+   - innerText aka text nodes are also child of the tag which is its parent.
+# document
+```js
+document.getElementsByTagName('h1');
+const h1 = document.getElementsByTagName('h1')
+h1[0].innerText = 'My Awesome Garish/Bland Web Page!!' //change the innertext in the first h1 tag, not permanent, will disappear when refresh
+
+// create new tag and content and append to existing DOM. Dynamically add DOM in the client side.
+const li = document.createElement('li');
+const textNode = document.createTextNode('Seven');
+li.appendChild(textnode); // result in <li>Seven</li>;
+const list = document.getElementById('main-list'); // which is <ul id="main-list">...</ul>
+node.appendChild(li);
+```
+# Query Selector <= search for tag in document with parameter as class or id or tag
+ - document.querySelector('#main-list'); // <ul id="main-list">...</ul>
+ - document.querySelectorAll('ul'); //returns an array of ul tags
+
+## JQuery
+- Code Sharing - JS code shared in the html page, including variables. JS are run in sequence as they are invoked in the html page, so variables declared in earlier invoked file can be called on in later invoked file.
+html
+- load JQuery first, then invoke our code later to make sure we can use JQuery in our code.
+- cdn = content delivery network, download jQuery from this service
+ 
+```
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<body>
+<div>
+  <label>Add new number: </label>
+  <input id="new-number" />
+  <button id ="add-new-number">Click me!</button>
+<div>
+</body>
+<script src="script2.js"></script>
+<script defer src="script1.js"></script> // defer loading the file until the end of the page
+```
+script1.js
+```js
+console.log(username);
+
+jQuery === $; //aliased jQuery function to $
+
+
+$(document).ready(()=> { //this waits the document to be ready before executing this code, wait for the DOM to fully load.
+  //created an li and gave it a text node
+  const $li = $('<li>').text('Seven').attr('id', 'value'); the $ in the variable name shows it is an jQuery element, this creates a <li> tag(jQuery automatically   end tag, and add the text node 'Seven', set attribute id=value.
+
+  // grab the list from the DOM, need to move the script1.js to bottom of the boday.
+  const $list = $('#main-list');
+
+  // append our new li
+  $list.append($li);
+  
+  const $button = $('#add-new-number');
+  $button.on('click, ()=> {
+    const $input = $('#new-number');
+    const value = $('new-number').val(); <= if pass in parameter to .val() will set the value, if do not pass parameter will pull in the inputed value.
+    const $newLi = $('<li>').text(value);
+    $list.append($newLi);
+    $input.val('').focus(); //change the input field back to '' empty string when focus onto the input field.
+  });
+}
+
+```
+script2.js
+```js
+const username = 'jstamos';
+```
+
+# Event Handling
+```js
+const h1 = document.getElementsByTagName('h1')[0]
+h1.addEventListener('click', () => {console.log('i got clicked)});
+document.addEventListener('mousemove', (event) => {
+  console.log(even) }); //event is an object with data for the mouse move.
