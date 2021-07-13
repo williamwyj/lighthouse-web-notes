@@ -1880,3 +1880,17 @@ div{
    flex-basis: 50%;
  }
  ```
+# Embed JS into html
+ 1. via the script tag, this will execute in order in the html code, so recommand to put JS near the end of the file so it does not prevent the page from rendering
+ ```html
+ <script>alert("Hello!");</script>
+ ```
+ 2. via exterior file:
+ ```html
+ <script src="/file location relative to the html file"></script>
+ ```
+ 3. inline, below code will run js code when the anchor tag link is clicked on
+ ```html
+ <a onclick="alert('Hello!');" href="link"></a>
+ ```
+ 
