@@ -2035,3 +2035,135 @@ const h1 = document.getElementsByTagName('h1')[0]
 h1.addEventListener('click', () => {console.log('i got clicked)});
 document.addEventListener('mousemove', (event) => {
   console.log(even) }); //event is an object with data for the mouse move.
+```
+### W4D3
+
+- [ ] AJAX
+- [ ] XMLHttpRequest (XHR) Object
+- [ ] Use AJAX to retrieve data from a server
+- [ ] Use jQuery to update the DOM with the retrieved data
+- [ ] Use AJAX to submit data to a remote server
+- [ ] All without refreshing the browser
+
+Web 2.0 or modern web:
+1. Keep the structure of the page
+2. change the data for the page (async) XML
+
+Asynchronous Javascript and XML === AJAX
+
+SPA - Single Page Application
+
+# Convention
+Get request expected to get back user
+Get request /API/ expected to get back data JSON
+```index.html
+<section id="post-container"></section>
+<form id="new-post"> <--submits url encoded data, with no method or action, form defaults to get request-->
+  <label>Title</label>
+  <input name = "title" />
+  <br/>
+  
+  <label>Body</label>
+  <input name = "body" />
+  <br/>
+  
+  <label>author</label>
+  <input name = "userid" />
+  <br/>
+  
+  <button type="submit">Create!</button>
+</form>
+```
+```style.css
+.post {
+ border: 2px dotted teal;
+ border-radius: 15px;
+ padding: 10px;
+}
+
+#new-post {
+  margin: 15px
+  border : 2px teal;
+}
+```
+
+```js
+
+const users = require(local file)
+const posts = require(local file)
+
+app.user(express.urlencoded({extended:false}); // to parse input data from post request in url format eg. title=whatever&body=what%20ever&userId=5
+//app.user(express.json()) // this parse input data Json
+app.user(express.static('public')); // static assets does not change like style, html page, client side javascript, or embeded images, logos.
+```
+```script.js
+$(document).ready (() => {
+  console.log('jQuery is ready!');
+
+$.getJSON('/api/posts', (post) => console.log(posts)); //shorthand method for ajax get method.
+
+const fetchPosts = () =>  $.ajax({
+    url: '/api/posts',
+    method: 'GET',
+    dataType: JSON, // this is typically not needed, can assume dataType is JSON
+    success: (posts) => {
+      console.log(posts);
+      console.log(createPost(post[0]); //
+      renderPosts(posts);
+    },
+    error: (err) => {
+      console.error(err);
+    }
+  });
+
+fetchPosts();
+  /*
+  <div class="post">
+  <h3>Title(id)</h3>
+  <h4>Body</h4>
+  <h5>Author: userId</h5>
+  </div>
+  */
+  /* const createPost = (post) => {
+    $(`<div class="post">
+       <h3>Title(id)</h3>
+       <h4>Body</h4>
+       <h5>Author: userId</h5>
+       </div>`)
+  };
+  */ // this will have security issue
+  
+  const createPost =(post) => {
+    const $title = $('<h3>').text(`Title: ${post.title} (${post.id})`);
+    const $body = $('<h4>').text(`Body: ${post.body}`);
+    const $author = $('<h5>').text(`Author: ${post.userId}`);
+    const $post = $('<div>').addClass('post');
+    
+    $post.append($title, $body, $author);
+    
+    return $post;
+  };
+  
+  const renderPosts = (posts) => {
+   $('#post-container').empty();
+   for const (post of posts) {
+     const $post = createPost(post);
+     $('#post-container').append($post); use prepend add the newest entry as the first child and render it ontop.
+  }
+  
+  const $form =$('#new-post');
+  $form.on('submit', function() {
+    event.preventDefault(); //html automatically do GET request with form submission and refresh page, this prevents it;
+    const urlEncodedData = $(this).serialize();
+    
+    $.post('/api/posts', urlEncodedData, (response)=> { //respone is data in object form.
+      fetchPosts();
+    });
+    
+    // or if do not want to use callback can use promise.
+    //$.post('/api/posts', urlEncodedData)
+        .then((response) => {
+        }
+  }
+});
+```
