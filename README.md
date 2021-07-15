@@ -2167,3 +2167,143 @@ fetchPosts();
   }
 });
 ```
+
+### W4D4 Responsive Design
+
+- [ ] Relative units
+- [ ] Media Queries
+- [ ] Responsive images
+- [ ] Font Scale
+- [ ] Grid Systems
+- [ ] SASS
+
+- Mobile accounts for 50.8% of traffic worldwide, 2020.
+* Responsive Design
+  - A multitude of different screen sizes exist across phones, phablets, tablets, destops, game consoles, TVs, and even wearable.
+  - Responsive design means that your Webb app can adapt to any screen szie and provide a good user-exp
+  - With responsive web design and the server always sends the same html code to all devises, and css is used to alter the rendering of the page on the device.
+
+`<div>` tag is a block element, will absorb the width that the tag is rendered in
+`<span>` tag is inline, text line will reach the end of the view port then continue on a new line
+
+ * Test Responsive design, change the size of the browser window. Or in developer tools in chrome, top beside element, there is a devices icon, to change view port to different screen sizes.
+
+## Mobile First design
+  - Create the layout for mobile first (more restrictions)
+  - Extend the layout for larger screen after
+  - This forces the client to choose what is the most important content that they want to display eg Apple.com, rather than craiglist where too many items are displayed.
+
+## Responsive Design Tools
+  - Relative units
+  - media queries
+  - responsive images
+  - font scale
+  - flexible grid-based layout
+## View Port and Units
+# View Port
+  - The meta viewport tag instructs the browser how to adjust the page to the width of each device
+  - when the meta viewport element is absent, mobile broswers will display web pages with default destop settings. This results in a seemingly zoomed out, unresponsive experience.
+  - below code sets width to device width and comes with html 5 starter code
+```
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width", initial-scale=1.0" />
+```
+# Units - Absolute Units
+  pt - points - smaller than pixel, directly proportional to pixels
+  px - pixel
+  cm - centimeters
+
+# Units - Relative units
+  em - size of the immediate parent - 
+  rem - size of the root element - the body tag which is the window
+  vw = 1% of the viewport width, relative to viewport size as viewport size changes.
+  vh = 1% of the view port's height.
+  % = percentage of the immediate parent size (width, height, font-size)
+
+```CSS
+*{box sizing : border-box} //where * applies to all
+```
+* In chrome inspect developer tools, in the computed tab, show all will show ALL CSS attribute for an element, weather explicitly set or not.
+
+# Media Queries
+Establish break points in the design, condition for the size of the viewport/screen to change CSS.
+```
+@media only screen and (max-width: 992px) { //this rule apply for with up to 992px, target the body element and change background-color to blue
+  body {
+    background-color: blue;
+  }
+}
+
+@media only screen and (max-width: 820) { //hides the aside tag content when screen/viewport max width is 820px or lower
+  main > aside {
+    display:none;
+  }
+}
+```
+## `>` indicates the parameter on the right Must be a direct decendant of the parameter on the right, with out this, right right parameter can be any decendant in any level in the left parameter
+
+# Sass - a new way to write styles, SCSS file. 
+  - CSS preprocessor
+  - SCSS files will need to be ran, produce CSS files which the html page reads.
+  - eg. command sass test.scss will return CSS code.
+  - runs similar to nodemon, monitor the SCSS file, will run and replace CSS file when SCSS file changes.
+  - CSS should be uploaded to git repo, put in gitignore. Becasue if edit directly CSS, during deployment SCSS will over write it with unmodifed code.
+```
+$ //dollar sign variable
+$main-size: 2em;
+$background-color: purple;
+
+.first {
+  font-size: $main-size;
+}
+```
+SCSS Nesting
+```
+#main {
+  font-size: $main-size;
+  p {
+    background-color: $background-color;
+  }
+  div {
+    background-color: $background-color;
+  }
+}
+```
+CSS without nesting
+```
+#main {
+  font-size: $main-size;
+}
+#main p {
+  background-color: $background-color;
+}
+#main div {
+  background-color: $background-color;
+}
+```
+
+# SCSS @import - import variables declared in other files
+# SCSS @extend - inherit styles from another file
+# SCSS @Mixins - Template styles
+```
+@mixin header-styles {
+  height: 50px;
+  background-color: $header-bg;
+}
+
+header {
+  @include header-styles()
+}
+
+@mixin box-sizes($n) {
+  height: $n;
+  width: $n;
+  line-height: $n;
+}
+
+.box {
+  @include box-sizes(15px);
+  border: 1px solid green;
+}
+```
