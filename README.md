@@ -2215,8 +2215,8 @@ fetchPosts();
   cm - centimeters
 
 # Units - Relative units
-  em - size of the immediate parent - 
-  rem - size of the root element - the body tag which is the window
+  em - size of the immediate parent FONT SIZE ONLY
+  rem - size of the root element - the body tag which is the window -FONT SIZE ONLY
   vw = 1% of the viewport width, relative to viewport size as viewport size changes.
   vh = 1% of the view port's height.
   % = percentage of the immediate parent size (width, height, font-size)
@@ -2234,12 +2234,14 @@ Establish break points in the design, condition for the size of the viewport/scr
     background-color: blue;
   }
 }
-
+// if not media selected, assume selected all
 @media only screen and (max-width: 820) { //hides the aside tag content when screen/viewport max width is 820px or lower
   main > aside {
     display:none;
   }
 }
+
+@media not screen, screen and (max-width: 820) { // this means not screen Or screen with max width 820, in this case the comma is a OR operator
 ```
 ## `>` indicates the parameter on the right Must be a direct decendant of the parameter on the right, with out this, right right parameter can be any decendant in any level in the left parameter
 
