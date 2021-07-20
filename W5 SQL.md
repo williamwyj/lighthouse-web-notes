@@ -1,4 +1,4 @@
-### W5D1 SQL
+# W5D1 SQL
 
 [ ]Why Databases
 [ ]DBMS - Data Base Management System
@@ -22,10 +22,10 @@
   * All Key words are CAPITALIZED, a guideline only depending on the DBMS, strongly recommanded to follow as best practice
   *  ; at end of query is very important since queries can be and usually are multiline.
 
-# psql
+### psql
 : psql -U postgres -p 5433 spot // postgres is username, 5433 is port, spot is database name, /q to exit, /dt to show all tables
 
-# SELECT statement
+### SELECT statement
   SELECT column list, function(), function(), ...
   FROM table1
   INNER JOIN table2 // a way of connecting one table to another table
@@ -37,16 +37,16 @@
   [OR criteria for row selection]
   GROUP BY column list
   HAVING criteria  
-# JOINS
+### JOINS
   - There are many types of joins, best practice is be as specific as possible.
     * INNER JOIN, [LEFT||RIGHT] OUTER JOIN
     * The difference, if there is an empty column, should it be included?
   - INNER JOIN, A.key = B.key if A.key or B.key is blank, dont include that tables of row in the combination
     EG. SELECT day_description, question, answer FROM days INNER JOIN objectives ON day.id=day_id LIMIT 10;
     - when specify columns in a table, use table_name.column_name 
-# ERD - Entity Relationship Diagram
+### ERD - Entity Relationship Diagram
 
-### W5D2 - DATABASE
+# W5D2 - DATABASE
 
 ## Primary and Foreign Keys
 * Primary Key : field values that uniquely identify a particular record within a table
