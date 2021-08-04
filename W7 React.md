@@ -324,6 +324,150 @@ const copy = {
 }
 }
 ```
+# W7D3 - Side effects & other data fetching
 
+### To Do
+- [ ] Rules for Hooks
+- [ ] Pure Functions and Side Effects
+- [ ] `useEffect`
+- [ ] Cleanup
+- [ ] Dependencies
+- [ ] _useEffect_ Flow
 
+### Rules of Hooks
+* called in the same order (not conditionally)
+* called inside React functions (components/custom hooks)
+* hooks have to start with `use`
+
+### Pure Functions
+* no side effects
+* always returns the same thing given the same arguments
+* side effects are reaching outside the function for a value, change a value, does anything that is not the purpose of the function
+```js
+
+let additionValue = 2;
+
+const addTwo = (num) => {
+  const result = num + additionValue; //additionValue is defined outside of function, not passed in as input, therefore side effect
+  additionValue++;//side effect
+  console.log(result) // side effect
+  return result;
+};
+```
+* useEffect, react hook for side effect, put all side effects in here, does not return anything
+  - executes on every single render
+  - can NOT use with conditional eg if statement, use with dependency array. Watches the variable in the array, only render when the variable change in subsequent renders, alway run on first render
+  - executes on the first render guaranteed, but only execute again is dependency array changes
+
+* useState, when using a callback function, the parameter is the previous value eg. setState((prevValue)=> {function to set new value})
+
+### React Renders UI -> Browser Display the UI -> Cleanup for previous Effects (if any) -> Run Effects for current render
+```js
+import {useEffect} from 'react';
+
+const App = () => {
   
+  const [counter, setCounter] = useState(0);
+  const [searchTerm, setSearchTerm] = useState(0);
+  
+  useEffect(() => {
+    document.title = `(${counter}) welcome to our site`;
+    console.log('changed the document title');
+  }, [counter, searchTerm]);// the dependency array, if anything in the array changes, this will execute
+  
+  useEffect(() => {
+    setTimeout(()=>{
+      console.log(`the current count is ${counter}`);
+    }, 3000);
+  });
+  
+  useEffect(() => {
+    const interval = setInterval(()=>{ //interval execute every render, this is a memory leak, where interval keeps running long after page renders
+      console.log(`the current count is ${counter}`);
+    }, 3000);
+    
+    // clearInterval(interval); // this clears the interval as soon as it is call so no interval will appear
+    
+    return () => { // in a useEffect, the return function will execute before the new render, in this case clean up anything still executing from the last render
+      clearInterval(interval);
+      console.log(`interval cleared`); 
+    }
+  }, [counter]);
+  
+  return (
+    <div className="App">
+      <h2>useEffect Hook</h2>
+      <h2>Count: {counter}</h2>
+      <button onClick={() => setCounter(counter+1)}>Click me</button>
+      
+      <div>
+        <h2>Search term: {searchTerm}</h2>
+        <input
+          value = {searchTerm}
+          noChange = {(event)}
+          
+    </div>
+  );
+```
+## Data fetching
+* Axios, ajax package only, in lieu of JQuery which has front end function as well thats already covered by React
+``` Appointments.jsx
+import {useEffect} from 'react';
+import axios from 'axios';
+
+const Appointments = () => {
+  
+  const [appointments, setAppointments] = useState({}); //set this to an empty object, because on first render while get request is being process, page is still being rendered, where the .keys.length of the data is still being executed, set this to an empty object so it will not error out
+  
+  const [selectedAppt, setSelectedAppt] = useState(null);
+  const [apptId, setApptId] = useState('');
+  
+  
+  useEffect(()=>{
+    //GET /api/appointments
+    axios.get('http://localhost:8001/api/appointments')
+      .then((response)=>{
+        console.log(response.data);
+        setAppointments(response.data); //without a condition array, this will result in infinite loop, but react cant catch it because it is async
+      });
+  }), []); //leave empty, if nothing changes then useEffect wont be called again, depend on nothing so leave it empty.
+  
+  useEffect(() => {
+    const targetAppt = appointments[apptId];
+    setSelectedAppt(targetAppt);
+  },[apptId]);
+  return (
+    <div>
+      <h2>All the Appointments</h2>
+      <h2>Total Appointments: { Object.keys(appointments).length }</h2>
+      
+      <div>
+        <label>Enter an Appt Id</label>
+        <br/>
+        <input
+          value={apptId}
+          onChange={(event) => setApptId(event.target.value)}
+         />
+      </div>
+      
+        { selectedAppt && ( //conditional render, only evalute the right side of the && when the left side is truthy
+        <div> 
+          <h2>Selected Appointment Information</h2>
+          <h2>Interview #{selectedAppt.id} at {selectedAppt.time}</h2>
+          { selectedAppt.interview && (
+            <>
+              <h2>Student:{selectedAppt.interview.student}</h2>
+              <h2>Interviewer:{selectedAppt.interview.interviewer}</h2>
+            </>
+          )}
+          
+        </div>
+        )}
+      
+      
+    </div>
+  );
+);
+
+export default Appointments
+```
