@@ -471,3 +471,164 @@ const Appointments = () => {
 
 export default Appointments
 ```
+# W7D4 - custom hooks
+
+## custom hooks
+* All react must start with the prefix "use"
+* can think of custom hooks as helper functions for React, but normal helper function cannot use React Hooks.
+* Multiple instances of the same custom hook do not share state
+* Custom hooks can use other React hooks
+* Best practice, separate folder for custom hooks
+* return functions in array when need to use multiple instance of it
+
+# Best pratice, put JS logic outside of the return
+
+```
+function App () {
+  // const [count, setCount] = useState(0);
+  const [count, increment] = useCounter(0);
+  // const [item, setItem] = useState(); made into useAxios custom hook
+  
+  const url ="http://api.kanye.rest";
+  
+  const {body} = useAxios(url);
+
+  /* useEffect(()=> { made into useAxios custom hook
+    axios.get(url)
+      .then((res)=>{
+        setBody(res.data);
+      })
+  }, []); */
+  
+  
+  return (
+    <div className="App">
+      <h1>Custom Hooks!</h1>
+      {count}
+      <button onClick={increment}>Show/Hide</button>
+      
+      /* <div>
+        {{count % 2 === 0} && <span>Hello There</span>} //&& is called short circuit express
+      </div>*/
+      
+    {(count %2 === 0) &&
+    <ul>
+      <KanyeQuote/>
+    </ul>
+    }
+    </div>
+    
+  );
+}
+
+export default App;
+```
+```
+//useCounter.js custom hook
+
+import { useState } from "react";
+const useCounter =function(initial) {
+  const [count, setCount] = useState(initial);
+  
+  const increment = function() {
+    setCount(count+1);
+  };
+  
+  const decrement = function() {
+    setCount(count-1);
+  };
+  
+  const clear = function() {
+    setCount(0);
+  };
+  
+  return [count, increment, decrement, clear];
+  
+};
+
+export default useCounter;
+```
+```Counter.js component
+const Counter = function(props){
+
+  const [count, increment, decrement, clear] = useCounter(props.initial);
+  return (
+      <div>
+        {count1}
+        <button onClick={increment1}>+</button>
+        <button onClick={decrement1}>-</button>
+        <button onClick={clear1}>0</button>
+      </div>
+  )
+}
+export default counter;
+```
+```useAxios.js custom hook
+const useAxios = function(url) {
+
+  const [body, setBody] = useState('');
+  const [error, setError] = useState(null);
+  const [pending, setPending] = useState(true);
+  
+  useEffect(()=> {
+    setPending(true);
+    axios.get(url)
+      .then((res)=>{
+        setError('');
+        setBody(res.data);
+        
+      })
+      .catch(err => {
+        setBody("");
+        setError(err.message));
+      })
+      .finally(()=> setPending(false));
+  }, [url]);
+  
+  return { body, error, pending };
+};
+
+export default useAxios;
+```
+```KanyeQuote.js component
+const KanyeQuote = function() {
+  const {body, error, pending} = useAxios("http://api.kanye.rest");
+  return(
+    <li>
+      {error && error}
+      {body && body.quote}
+      {pending && "loading ... "}
+    </li>
+  )
+};
+
+export default KanyeQuote;
+```
+```officeQuote.js component
+const officeQuote = function() {
+  const {body, error, pending} = useAxios("http://www.officeapi.dev/api/quotes/random");
+  return(
+    <li>
+      {error && error}
+      {body && <div>{body.data.content}<span>{body.data.character.firstname}</span></div>}
+      {pending && "loading ... "}
+    </li>
+  )
+};
+
+export default officeQuote;
+```
+```ronQuote.js component
+const ronQuote = function() {
+  const {body, error, pending} = useAxios("http://ron-swanson-quotes.herokuapp.com/v2/");
+  return
+    <li>
+      {error && error}
+      {body && <div>{body.data.content}<span>{body.data.character.firstname}</span></div>}
+      {pending && "loading ... "}
+    </li>
+  )
+};
+
+export default officeQuote;
+```
