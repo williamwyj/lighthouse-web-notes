@@ -1,0 +1,240 @@
+# W08D01 - Unit & Integration Testing
+
+- [ ] Tools for testing React
+- [ ] Coverage Reports
+- [ ] Add Features/Tests to our App
+- [ ] `debug()` and `prettyDOM()`
+- [ ] Mocking AJAX Requests and Functions
+
+* Static => linter
+* Unit => testing the smallest pieces of your code /app
+* Intergration => multiple pieces working together
+* End-to-end => user stories
+
+* Regression => write a test to replicate the bug, capture bugs coming back
+
+### Test Runner
+* Jest
+  * test runner much like Mocha
+  * tests only fail if the code throws an error
+  * minimal assetion functionality
+* DOM Testing Library
+  * checking for classes, id's, etc
+  * rendering React components
+  
+### Do not text with exterior API
+ * use fake api with Axios
+```
+//import the library under test
+import axios from 'axios';
+//tell jest to fake that library
+jest.mock('axios');
+//create fake data
+const data = [
+  {
+    id: 1,
+    name: 'Alice',
+    points: 15
+  }
+];
+```
+  * find general text, findByText('text', {exact : false});
+
+### Test with Jest
+```helpers.test.js
+import { announceResult } from '../helpers'
+
+describe('robotChoice function', ()=? {
+  
+  test('returns the winning item if cheating is true', ()=>{
+    const playerSelection = 'Moai';
+    const cheating = true;
+    const actual = robotChoice(playerSelection, cheating); //put values that has default at the end, put variables with semantic meaning instead of direct primitive value to easy to read
+    const expected = 'Tree';
+    
+    expect(actual).toBe(expected);
+  });
+  
+  test('returns the valid item if cheating is false', ()=>{});
+    const playerSelection = 'Moai';
+    const cheating = false;
+    
+    const actual = robotChoice(playerSelection, cheating);
+    const expected = ['Moai', 'Axe', 'Tree'];
+    
+    expected.includes(actual);
+    
+    expect(actual).toBe(expected);
+    expect(expected.includes(actual)).toBe(true); // if error will return false does not equal true, not very descriptive error message
+    
+    expect(expected).toContain(actual);//Jest function that will result in more descriptive error message if fail
+    // flakey tests are tests that only work sometimes
+});
+```
+```
+export const robotChoice = (playerSelection, cheating)=>{
+  const winning = {
+    Tree: 'Axe'
+    Axe: 'Moai',
+    Moai: 'Tree'
+  };
+  
+  if(cheating) {
+    return winning[playerSelection];
+  }
+  
+  const options = ['Moai', 'Axe', 'Tree'];
+  const randomIndex = Math.floor(Math.random() * options.length);
+  return options[randomIndex];
+```
+```Game.test.js
+import React from 'react';
+import Game from '../Game';
+import { render } from '@testing-library/react';
+
+describe('tests for the Game component',()=>{
+  test('toggle the cheating boolean by clicking on the robot head icon', ()=>{
+    render(<Game />);
+    
+  });
+
+});
+
+### prettyDom
+* show the dom
+* console.log(prettyDom(container))
+* import from react test library
+
+### debug
+* from render
+debug(); //just this syntax, also show the dom, less syntax
+
+### coverage report
+*verbose provide more info display in test
+*coverage shows what code is tested, will generate a report for testing coverage
+*disable watch because unless disable, will only report on watched file which are recently changed files only.
+npm test -- --verbose --coverage --watchAll=false
+*add /coverage in .gitignore
+
+#W8D2 Advanced React
+
+* React Router - front end routing
+* useContext - new hook to avoid prop drilling
+* tip, to use && operator in the jsx render
+{ loading && <h1>loading</h1> }
+{ !loading && <h1>Display contect</h1> }
+
+### React Router
+* npm install react-router-dom
+* a href link typically navigate to a new page, React Router keeps this in SPA
+* Cannot use <Link> outside of a <Router>
+```jsx
+<Router>
+ <link to ='/page1' exact>Text</link> // use this in lieu of <a href>, will not navigate away to another
+ <link to ='/page2' exact>text2</link> // the exact key word does the same thing as the Switch tag, help render unique pages with overlapping URL
+ // best practice to add exact every where as it is self documenting code, downside to add exact every where is extra typing and tendency to forget,
+<Router>
+  <Switch> //This tag switches between the different pages with overlapping url, eg '/page1' matches both '/' and '/page1' so on '/page1' both pages will render. the switch tag avoid this
+   <Route path="/page1" exact> //route links will lead to these pages depending on the URL
+    <h2>text</h2>
+   </Route>
+   
+   //below :id url requires, useParams hook in the component
+   //extract parameter out of the path
+   <Route path='/:id'>
+    <Component />
+    /* useParams syntax in component
+    import { useParams } from 'react-router-dom'
+    const {id} = useParams();
+    const objective = objectives.find(obj=>obj.id == id); //pass objectives prop in this function as a prop
+    
+    return (
+     <p>{objective.day_id}</p>
+     ...
+    )
+    */
+   </Route>
+   
+   <Route path='/page2'>
+    <h2> text2 </h2>
+   </Route>
+  </Switch>
+ </Route>
+</Route>
+``` 
+## useContext
+* Make a new file sibling to component using useContext, typically ContextHolder.js
+* import this into whichever component that need it, so does not end in infinite loop
+```
+import {createContext} from 'react';
+
+export default createContext(); // could put a default;
+```
+```Parent.js
+import ChildOne from './ChildOne';
+import ContextHolder from './ContextHolder';
+
+const Parent = (props) => {
+ const [counter, setCounter] = useState(0);
+ 
+ return (
+  <div>
+   <h2>Parent</h2>
+   <ContextHolder.Provider value={{counter,setCounter}}> //
+    <InTheMiddle> //put ChildOne into InTheMiddle instead of directly in Parent, avoid prop drilling, directly import context from the Parent to any Child regardless of any intermediate Child
+    //<ChildOne/> //renders current counter number
+    <ChildTwo/> //renders the button to add counter and contains the function to set state for counter
+   </ContextHolder.Provider>
+  </div>
+  
+   
+ )
+ }
+```
+``` ChildOne.js
+import {useContext} from 'react';
+import ContextHolder from './ContextHolder';
+
+export default const ChildOne(props) => {
+ const {counter} = useContext(ContextHolder);
+ 
+ return (
+  <div>
+   <h2>ChildOne</h2>
+   <h3>Current Count: {counter}</h3>
+  </div>
+ };
+};
+```
+```ChildTwo.js
+export default const ChildTwo = (props) => {
+ const {setCounter} = useContext(ContextHolder)'
+ 
+ const handleClick = () => {
+  setCounter(prev => prev+1);
+ };
+ 
+ return (
+  <div>
+   <h2>ChildTwo</h2>
+   <button onClick={handleClick}>Plus One</button>
+  </div>
+ );
+};
+```
+``` InTheMiddle.js
+import {useContext} from 'react';
+import ContextHolder from './ContextHolder';
+
+export default const InTheMiddle() => {
+ //const {counter} = useContext(ContextHolder);
+ 
+ return (
+  <div>
+   <h2> InTheMiddle </h2>
+   <ChildOne/>
+   //<h3>Current Count: {counter}</h3>
+  </div>
+ };
+};
+```
