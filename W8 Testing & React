@@ -238,3 +238,99 @@ export default const InTheMiddle() => {
  };
 };
 ```
+# W8D3 Cypress End to End testing
+
+* Nameing scheme - testingFile.spec.js
+* executable .node_modules/.bin/cypress
+* .node_modules/.bin/cypress open <= will open a browser with GUI for testing
+* Cypress shows the GUI as test proceeds, Jest only shows HTML code if prompted with prettyDOM or debug()
+```
+it("check if the checkbox can be unchecked", ()=>{
+  cy.get(.className) <= selects all DOM element with this class
+    .first()         <= select the first of the returned DOM
+    .find('input')   <= find the input item which in this case is a check box
+    .uncheck()       <= uncheck check box
+    .should('not.be.checked'); <= check if the check box is unchecked
+});
+
+it('can check a checkbox by clicking on the label', ()=>{
+  cy.contains('EP') <= check element that has EP text, in case of multiple elements, select them all
+    .click();       <= click the element
+    
+  cy.get('#EP')     <= tag with ID of EP
+    .should('be.checked'); <= check if the check box is checked
+})
+```
+
+```test input field
+beforeEach(()=> {
+ cy.visit('/');  <=  in Cypress GUI > settings > configuration > cypress.json > baseUrl:"http://localhost:8765" preset url so only '/' suffice
+ 
+ cy.get('.search_form');  <= search with class name
+   .find('input');        <= find the input field
+   .as('searchField');    <= alias the element found with the name specificed
+}
+
+it('can handle text input', ()=>{
+ cy.get('@searchField')                   <= the @ symbol tells cypress to look for an alias, not references in the DOM
+   .type('Celine Dion', {delay: 250})     <= type in string "Celine Dion', delay 250mm between character presses
+   .should('have.value', 'Celine Dion');
+});
+
+it('can handle backspace', () => {
+  cy.get('@searchField')
+    .type('Beee{backspace}ge{backspace}{backspace} Gees', {delay 200})
+    .should('have.value', 'Bee Gees');
+ });
+});
+```test result
+//test against known local data and not dynamic data from third party API, since third part API may change unexpectedly
+it('can display the results from an API call', ()=>{
+  cy.visit('/')
+  
+  cy.intercept('GET', '**/search*', {fixture:'itunes'})  <= doulbe asterisk does not consume the slash, only replace anything up to the slash
+    .as('loadFakeData');
+  
+  cy.get('.search_form')
+    .find('input')
+    .type('Daft Punk')
+    .should('have.value', Daft Punk');
+  
+  cy.get('.spinner')
+    .should('be.visible') <= loading animation is displayed
+  
+  //wait for the data to load
+  cy.wait('@loadFakeData')
+    .get('article.album')     <= css selector, article tag with class album, get all elements that matches
+    //look for a specific album
+    .contains('Alive 2007')   <= out of all selected, look for ones contain this content
+    .should('be.visible');
+  
+  //uncheck the explicit checkbox
+  cy.get('#Explicit')
+    .uncheck()
+    .should('not.be.checked');
+  
+  //make sure the explicit album no longer appears
+  cy.get('article.album')
+    .contains('Daft Club')
+    .should('not.be.visible')
+})
+```
+
+### Styled-component - css package
+* code CSS style code in JS, in the react component file
+* highly specific, will overide CSS unless specially exempted with special symbol
+* style object where tag is a function:
+```
+const Title = styled.h1`
+  font-size: 1.5em;
+  text-align: center;
+  color: palevioletred;
+`;
+
+render (
+  <Title>
+    Hello World!
+  </Title>
+)
