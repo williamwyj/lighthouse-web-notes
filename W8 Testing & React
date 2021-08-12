@@ -242,22 +242,22 @@ export default const InTheMiddle() => {
 
 * Nameing scheme - testingFile.spec.js
 * executable .node_modules/.bin/cypress
-* .node_modules/.bin/cypress open <= will open a browser with GUI for testing
+* .node_modules/.bin/cypress open - will open a browser with GUI for testing
 * Cypress shows the GUI as test proceeds, Jest only shows HTML code if prompted with prettyDOM or debug()
 ```
 it("check if the checkbox can be unchecked", ()=>{
-  cy.get(.className) <= selects all DOM element with this class
-    .first()         <= select the first of the returned DOM
-    .find('input')   <= find the input item which in this case is a check box
-    .uncheck()       <= uncheck check box
-    .should('not.be.checked'); <= check if the check box is unchecked
+  cy.get(.className) - selects all DOM element with this class
+    .first()         - select the first of the returned DOM
+    .find('input')   - find the input item which in this case is a check box
+    .uncheck()       - uncheck check box
+    .should('not.be.checked'); - check if the check box is unchecked
 });
 
 it('can check a checkbox by clicking on the label', ()=>{
-  cy.contains('EP') <= check element that has EP text, in case of multiple elements, select them all
-    .click();       <= click the element
+  cy.contains('EP') - check element that has EP text, in case of multiple elements, select them all
+    .click();       - click the element
     
-  cy.get('#EP')     <= tag with ID of EP
+  cy.get('#EP')     - tag with ID of EP
     .should('be.checked'); <= check if the check box is checked
 })
 ```
@@ -334,3 +334,137 @@ render (
     Hello World!
   </Title>
 )
+
+# W8D4 React Class
+
+* In OOP, when create a new class, copy from existing class
+* Class based component, object will live in the DOM, but functions will be garbage collected as soon as it is finished.
+  *when a new class based component is added, an object copy of the class component is created, pass in props
+```
+const component = new ClassBased(props);
+component.props = props;
+```
+```jsx
+import {Component} from 'react'; //fundamental component, the most basic
+
+class ClassBased extends Component {
+  constructor(props) {  //can accept props
+    super(); // call the parent constructor
+    this.state = {  //always an object, always use the keyword state
+      counter : 0;
+      interviewer : props.interviewer || null
+      secretPhrase : 'Hello'
+    } 
+    this.increment=this.increment.bind(this) // binds the this in increment to the component
+  }
+  
+  increment() {
+    //Dont do this, this directly manipulate state
+    this.state.counter += 1;
+    
+    // use setState
+    this.setState({ counter: this.state.counter + 1}); //this doesnt work without bind because cannot recognize what 'this' is
+    //the above works without spread because react updates the key value pair only
+    //react takes this object and merge it to state so no information is lost without spreading
+    //also this means can add new key value pair to state - do NOT do this, always initiate keys in the constructor, very hard to keep track of state this way
+  }
+  
+  render(){ //required for this class based components to work, renders the object since the object does not get garbage collected immediately after it is called
+    return ( //same as component based, can be used the same way in the parent component, react will interpret automatically
+      <div>
+        <h2>Nothing has changed</h2>
+        <h2>{this.prop.someProp}</h2> // when component is first added to the DOM, a new copy of the glass
+        <h2>{this.state.secretPhrase}</h2>
+        <h2>Counter: {this.state.counter}</h2>
+        <button onClick={this.increment}>Increase</button>
+      </div>
+    };
+  }
+}
+
+export default ClassBased;
+```
+```App.js
+import ClassBased from './components/ClassBased';
+
+const App = () => {
+  return (
+    <div className="App">
+      <h2>Class-Based Components</h2>
+      <ClassBased someProp="content" /> //pass props the same way 
+    </div>
+    
+    <Router>
+      <nav>
+        <Link to="/lifecycle">LifeCycle </link>
+        <link to="/classbased">Class-Based</link>
+      </nav>
+    <Router>
+    <Route>
+      <Switch>
+      // render different components on different url
+      </Switch>
+    </Route>
+    
+  )
+}
+```
+
+### Lifecyle methods
+
+* Class based component, after it is rendered and update the DOM, react runs a 'componentDidMount' - happens once
+* Update state, DOM update, re render, 'componentDidUpdate' - happens many times
+  -only one function to update everytime page updates
+  -function can use useEffect to specifically listen for a particular change to execute specific functions that only pertains to the update listened
+* once finish, componentWillUnmount, this function cleans up before the component is unmounted
+
+```
+import {Component} from 'react';
+
+class LifeCycle extends Component {
+
+  constructor() {
+    super();
+    this.state={
+      searchTerm,
+      interval:null
+    }
+  
+  //Great for fetching datam establish a web socket, connection, set an interval
+  componentDidMount() {
+    console.log('the component has mounted');
+    ajax.get() // good since only execute once
+  }
+  
+  //listen for particular updates, only one function to update if anything on the page update
+  componentDidUpdate(prevProps, prevState) {
+    if(this.props.userId !==prevProps.userId) { //compare if anything changed
+      //function to update
+    }
+    const interval = setInterval(()=>{),1000);
+    this.setState({ interval })
+  }
+  
+  // clean up process, sever socket connection, cancel intervals
+  componentWillUnmount(){
+    
+  }
+  
+  componentWillUnmount() {
+    clearInterval(this.state.interval) // this will not work because interval was declared inside a different function block, to resolve this issue, put the interval into state
+  
+  
+  }
+  render() {
+    return(
+      <div>
+        <h2> LifeCycle Component</h2>
+        <input
+          value={this.state.searchTerm}
+          onChange={(event)=>this.setState({searchTerm: event.target.value}) //arrow function do not refer to their own this, they refer to the this in their parent scope
+        />
+        <h2>Search Term: {this.state.searchTerm}</h2>
+      </div>
+    )
+}
+```
