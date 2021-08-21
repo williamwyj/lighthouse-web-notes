@@ -32,7 +32,6 @@ wss.on('connection', function connection(ws) {
     console.log('received: %s', message);
   });
 
-
 //send data to the client
   ws.send('something');
 });
