@@ -184,3 +184,7 @@ end
 
 * rails g scaffold ice_cream
   - creates all rails feature such as controllers, views with html pages already implemented, routes, 
+
+# W10D2
+
+
