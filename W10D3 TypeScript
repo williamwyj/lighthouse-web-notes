@@ -1,0 +1,136 @@
+# W10D3 TypeScript (TS)
+
+- [ ] What is TypeScript
+- [ ] TypeScript CLI
+- [ ] Primitive Types
+- [ ] Arrays
+- [ ] Objects
+- [ ] Functions and Methods
+- [ ] Duck Typing
+- [ ] Generics
+
+### What is TypeScript??
+* superset of JS
+  - SCSS => superset of CSS
+  - JSX => html inside JS
+* add types to JS.
+* it gives you confidence
+* Deno can run it
+
+* Node and broswer does not recognize TypeScript
+* transpilation or compilation to JS to be run
+* every js app can be written in ts
+
+* tsc - TS compiler
+
+* tsc filename.ts // translate to JS
+* tsc filename.ts --target es6 //translate to JS es 6
+
+* tsc init //initialize tsc and create a tsconfig file
+
+```ts
+let username: string = 'Alice'; //declare variable 'username' to be string forever
+let username: string | number = 'Alice'; //declare variable 'username' OR 'number' to be string forever
+let username: any = 'Alice'; //declare variable to be any type, not recommand to use
+
+const myNumber: number[] = [] //declare all elements in the array must be numbers
+
+myNumbers.push(1);
+myNumbers.push('hello'); //will error due to pushing string into number only array, typescript make sure function only have numbers
+
+const myNumber: (number | string)[] = []; //elements in the array can be number or array
+
+const dog: {
+  name: string;
+  age: number;
+} = {
+  name: 'Goldie',
+  age: 13
+};
+
+interface IDog { //convention to add 'I' in front of interface to distinguish from class
+// this is essentially a new datatype that can be declared else where similar to strings, number
+  id?: number; //the ? makes this key optional
+  name: string;
+  age: number;
+}
+
+const dog: IDog = { //all keys and type must match the corresponding interface, cannot miss keys eg, must have both name and age key. But since id?, id is optional
+  name: 'Goldie',
+  age: 13,
+};
+
+const sayHello = (firstName: string, age?: number): string => { //declare type of return to be string
+  return 'Hello';
+};
+
+sayHello('Name'); //will error if there is no ? after age, the ? makes the argument optional
+
+const returningPromise = (): Promise<string> => { //this function returns a Promise with the data type in the <>
+  return new Promise((resolve) => {
+    resolve('hello there');
+  });
+};
+```
+### Methods
+interface IButterfly {
+  breed: string;
+  colours: string[];
+  fly: (distance: number) => IButterfly; //fly is a method, takes in a distance: number argument, return a IButterfly type, if change IButterfly to boolean then return boolean;
+}
+
+const myButterfly: IButterfly = {
+  breed: 'monarch',
+  colours: ['yellow', 'orange'],
+  fly: function() {
+    return this;
+  }
+};
+```
+### Higher order function
+```
+const hof = (cb: (num: number) => boolean) => { //callback function will take in argument num type number, return a boolean, if void then dont return anything
+  cb(42);
+}
+```
+### Duck typing
+```
+interface IPotentialUser {
+  username: string;
+  password: string;
+}
+
+const login = (potentialUser: IPotentialUser): boolean => {
+  potentialUser.friends // this is invalid, even though it is passed in, it is not part of the original interface and cannot be used
+  return true;
+};
+
+const myUser = {
+  username: 'jstamos',
+  password: '1234',
+  friends: []
+};
+
+login(myUser);
+
+const myName = 'Andy';
+```
+### Generics
+```
+interface IContainer<T, OtherType> {
+  name: string;
+  contents: T;
+  moreStuff?: OtherType;
+  pets?: IDog[];
+}
+
+const numContainer: IContainer<number> = {
+  name:  'number container',
+  contents: 500,
+  moreStuff: 400
+};
+
+const strContainer: IContainer<string, IDog> = {
+  name: 'string container',
+  contens: 'Hello'
+};
