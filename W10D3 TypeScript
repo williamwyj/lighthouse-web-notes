@@ -134,3 +134,13 @@ const strContainer: IContainer<string, IDog> = {
   name: 'string container',
   contens: 'Hello'
 };
+
+
+
+Idea > user stories >  resources > ERD > Routes > wireframes(views)
+
+testing, recommand to add Cypress if any test
+
+http://project-resources.herokuapp.com/
+
+Previous projects and resources
