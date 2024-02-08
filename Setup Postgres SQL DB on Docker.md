@@ -11,3 +11,7 @@ Run a container/instance of the postgresSQL image, where database_name is the da
 ```
 docker run –name database_name -e POSTGRES_PASSWORD=Welcome4$ -p 5432:5432 Postgres
 ```
+in docker CLI access postgres db
+```
+psql -h localhost -U postgres
+```
